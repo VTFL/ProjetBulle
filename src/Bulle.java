@@ -35,9 +35,10 @@ public class Bulle {
 		}
 		return null;
 	}
-
-	public static void main(String[] args) {
-		System.out.println(Bulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt"));
+	public Double getDistance(Bulle b){
+		return Math.sqrt(Math.pow(this.getX()-b.getX(),2) +
+				Math.pow(this.getY()-b.getY(),2) +
+				Math.pow(this.getZ()-b.getZ(),2));
 	}
 
 	public double getX() {
