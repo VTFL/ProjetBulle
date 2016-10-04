@@ -17,6 +17,7 @@ public class Bulle {
 		this.z = z;
 	}
 
+
 	public static ArrayList<Bulle> getBullesFromFile(String filename){
 		File file = new File(filename);
 		try {

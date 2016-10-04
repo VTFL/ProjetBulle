@@ -8,6 +8,10 @@ public class Main {
 		ArrayList<Bulle> ar = Bulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt");
         System.out.println(ar);
 		System.out.println(ar.get(4).getDistance(ar.get(5)));
+		Direction.getDirection(ar);
 	}
+
+
+
 
 }
