@@ -9,6 +9,7 @@ public class Main {
         System.out.println(ar);
 		System.out.println(ar.get(4).getDistance(ar.get(5)));
 		Direction.getDirection(ar);
+		//ajout commit
 	}
 
 
