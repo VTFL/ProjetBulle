@@ -6,6 +6,11 @@ import java.util.ArrayList;
 public class Direction extends ArrayList<Bulle> {
 	final static double INTERVALLE_PRECISION = 0.10;
 
+    //renvoi un angle alpha a partir des distance a b et c
+    public static double alKashi(double a,double b,double c){
+        return Math.acos((Math.pow(a,2) + Math.pow(b,2) + Math.pow(c,2))/(2*a*b));
+    }
+
 
 	public static ArrayList<Direction> getDirection(ArrayList<Bulle> ar) {
 		ArrayList<Direction> couples = new ArrayList<Direction>();
@@ -44,6 +49,10 @@ public class Direction extends ArrayList<Bulle> {
 			Double d = triplet.get(1).getDistance(triplet.get(2));
 			for(Bulle b4 : ar) {
 				if(!triplet.stream().anyMatch((Bulle b) -> b.equals(b4))){
+                    // c = 12
+                    // a = 01
+                    // b = 02
+                    //double alpha =
 					if(d-(d*INTERVALLE_PRECISION)< b4.getDistance(triplet.get(2)) && b4.getDistance(triplet.get(2))< d+(d*INTERVALLE_PRECISION)) {
 
 						Direction dir = new Direction();
