@@ -39,16 +39,13 @@ public class Direction extends ArrayList<Bulle> {
 					Direction dir = new Direction();
 					dir.add(b1);
 					dir.add(b2);
-					if(!couples.stream().anyMatch((Direction d) -> d.contains(b1) && d.contains(b2))){
-						couples.add(dir);
-					}
 
 				}
 			}
 		}
 
 		// il faut retiré les doublons de couples
-
+		/*
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
 			Direction tmp =couples.get(0);
 
@@ -91,8 +88,8 @@ public class Direction extends ArrayList<Bulle> {
 				}
 
 			couples.remove(0);
-		}
-		/*System.out.println(couples.size());
+		}*/
+		System.out.println(couples.size());
 		ArrayList<Direction> triplets = new ArrayList<Direction>();
 		for(Direction couple : couples){
 			Double d = couple.get(0).getDistance(couple.get(1));
@@ -138,14 +135,14 @@ public class Direction extends ArrayList<Bulle> {
 					}
 				}
 			}
-		}*/
-        System.out.println(res.size());
-		System.out.println(bulles.size());
+		}
+        System.out.println(quatuor.size());
+		//System.out.println(bulles.size());
 		SingleGraph g = new SingleGraph("test");
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		int id=0;
 		for(int i=0; i<10;i++) {
-			Direction dir =res.get(i);
+			Direction dir =quatuor.get(i);
 			Node prec = null;
 
 			for (Bulle b : dir) {
