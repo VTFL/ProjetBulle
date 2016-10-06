@@ -48,7 +48,6 @@ public class Direction extends ArrayList<Bulle> {
 		}
 
 		// il faut retiré les doublons de couples
-
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
 			Direction tmp =couples.get(0);
 
@@ -59,19 +58,21 @@ public class Direction extends ArrayList<Bulle> {
 						Bulle b = bulles.get(j);
 
 						double distance = b.getDistance(tmp.get(i-1));
-						double alpha = angleOrienté(b, tmp.get(i - 1), tmp.get(i-2));
-						//System.out.println(ANGLE);
+						double alpha = angleOrienté(b, tmp.get(i-1), tmp.get(i-2));
+
 						if (((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
 								&& (distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION)))
-								//&& (((ANGLE - (ANGLE * INTERVALLE_PRECISION)) < alpha ) || ((ANGLE - (ANGLE * INTERVALLE_PRECISION)*-1 > alpha )))
+								&& (((ANGLE - (ANGLE * INTERVALLE_PRECISION)) < alpha ) || ((ANGLE - (ANGLE * INTERVALLE_PRECISION)*-1 > alpha )))
 								&& ((alpha < (ANGLE + (ANGLE * INTERVALLE_PRECISION))) || (alpha > (ANGLE + (ANGLE * INTERVALLE_PRECISION)*-1)))) {
 								tmp.add(b);
+								distancePrec = distance;
+							System.out.println("yolo");
 
 						}else{
 							break;
 						}
 
-						distancePrec = distance;
+
 					}
 					if(tmp.size() == 5){
 						bulles.removeAll(tmp);
@@ -144,7 +145,7 @@ public class Direction extends ArrayList<Bulle> {
 		SingleGraph g = new SingleGraph("test");
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		int id=0;
-		for(int i=0; i<10;i++) {
+		for(int i=0; i<res.size();i++) {
 			Direction dir =res.get(i);
 			Node prec = null;
 
