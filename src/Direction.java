@@ -8,6 +8,7 @@ import java.util.ArrayList;
  */
 public class Direction extends ArrayList<Bulle> {
 	final static double INTERVALLE_PRECISION = 0.10;
+	final static double ANGLE = 20; // degré
 
     //renvoi un angle alpha a partir des distance a b et c
     public static double alKashi(double a,double b,double c){
@@ -19,18 +20,21 @@ public class Direction extends ArrayList<Bulle> {
 	public static double angleOrienté(Bulle a,Bulle b,Bulle c){
 		//System.out.println(det(a,b));
 		if(det(a,b) < 0){
-			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b));
+			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b))*180;
 		}else{
-			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b))*-1;
+			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b))*-1*180;
 		}
 	}
 
 
 	public static ArrayList<Direction> getDirection(ArrayList<Bulle> ar) {
 		ArrayList<Direction> couples = new ArrayList<Direction>();
+		ArrayList<Bulle> bulles = new ArrayList<Bulle>();
+		ArrayList<Bulle> estUtilise = new ArrayList<Bulle>();
+		ArrayList<Direction> res = new ArrayList<Direction>();
 
-		for (Bulle b1 : ar) {
-			for (Bulle b2 : ar) {
+		for (Bulle b1 : bulles) {
+			for (Bulle b2 : bulles) {
 				if (!b1.equals(b2)) {
 					Direction dir = new Direction();
 					dir.add(b1);
@@ -39,7 +43,29 @@ public class Direction extends ArrayList<Bulle> {
 				}
 			}
 		}
-		System.out.println(couples.size());
+
+		while((!bulles.isEmpty()) && (!couples.isEmpty())){
+			Direction tmp =couples.get(0);
+			for (int i = 2; i < 5; i++) {
+
+				double distancePrec = tmp.get(1).getDistance(tmp.get(2));
+				for(int j = 0;j<bulles.size();j++) {
+					Bulle b = bulles.get(j);
+					double distance = b.getDistance(tmp.get(i));
+
+					if (((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
+							&& distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION)))
+							&& ((ANGLE - (ANGLE * INTERVALLE_PRECISION)) < alpha)
+							&& (alpha < (ANGLE + (ANGLE * INTERVALLE_PRECISION)))) {
+
+					}
+
+					distancePrec = distance;
+				}
+			}
+			couples.remove(0);
+		}
+		/*System.out.println(couples.size());
 		ArrayList<Direction> triplets = new ArrayList<Direction>();
 		for(Direction couple : couples){
 			Double d = couple.get(0).getDistance(couple.get(1));
@@ -87,6 +113,7 @@ public class Direction extends ArrayList<Bulle> {
 			}
 		}
         System.out.println(quatuor.size());
+        */
 		SingleGraph g = new SingleGraph("test");
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		int id=0;
