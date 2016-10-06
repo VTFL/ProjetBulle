@@ -2,13 +2,14 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Created by Utilisateur on 03/10/2016.
  */
 public class Direction extends ArrayList<Bulle> {
 	final static double INTERVALLE_PRECISION = 0.10;
-	final static double ANGLE = 20; // degré
+	final static double ANGLE = 20*Math.PI/180; // radian
 
     //renvoi un angle alpha a partir des distance a b et c
     public static double alKashi(double a,double b,double c){
@@ -20,17 +21,16 @@ public class Direction extends ArrayList<Bulle> {
 	public static double angleOrienté(Bulle a,Bulle b,Bulle c){
 		//System.out.println(det(a,b));
 		if(det(a,b) < 0){
-			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b))*180;
+			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b));
 		}else{
-			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b))*-1*180;
+			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b))*-1;
 		}
 	}
 
 
 	public static ArrayList<Direction> getDirection(ArrayList<Bulle> ar) {
 		ArrayList<Direction> couples = new ArrayList<Direction>();
-		ArrayList<Bulle> bulles = new ArrayList<Bulle>();
-		ArrayList<Bulle> estUtilise = new ArrayList<Bulle>();
+		ArrayList<Bulle> bulles = new ArrayList<Bulle>(ar);
 		ArrayList<Direction> res = new ArrayList<Direction>();
 
 		for (Bulle b1 : bulles) {
@@ -39,32 +39,52 @@ public class Direction extends ArrayList<Bulle> {
 					Direction dir = new Direction();
 					dir.add(b1);
 					dir.add(b2);
-					couples.add(dir);
+					if(!couples.stream().anyMatch((Direction d) -> d.contains(b1) && d.contains(b2))){
+						couples.add(dir);
+					}
+
 				}
 			}
 		}
 
+		// il faut retiré les doublons de couples
+
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
 			Direction tmp =couples.get(0);
 
-
-				double distancePrec = tmp.get(0).getDistance(tmp.get(1));
 				for(int j = 0;j<bulles.size();j++) {
+					double distancePrec = tmp.get(0).getDistance(tmp.get(1));
+					//System.out.println(distancePrec);
 					for (int i = 2; i < 5; i++) {
 						Bulle b = bulles.get(j);
-						double distance = b.getDistance(tmp.get(i));
-						double alpha = angleOrienté(b, tmp.get(i - 1), tmp.get(i));
+
+						double distance = b.getDistance(tmp.get(i-1));
+						double alpha = angleOrienté(b, tmp.get(i - 1), tmp.get(i-2));
+						//System.out.println(ANGLE);
 						if (((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
-								&& distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))
-								&& ((ANGLE - (ANGLE * INTERVALLE_PRECISION)) < alpha)
-								&& (alpha < (ANGLE + (ANGLE * INTERVALLE_PRECISION)))) {
+								&& (distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION)))
+								//&& (((ANGLE - (ANGLE * INTERVALLE_PRECISION)) < alpha ) || ((ANGLE - (ANGLE * INTERVALLE_PRECISION)*-1 > alpha )))
+								&& ((alpha < (ANGLE + (ANGLE * INTERVALLE_PRECISION))) || (alpha > (ANGLE + (ANGLE * INTERVALLE_PRECISION)*-1)))) {
 								tmp.add(b);
 
+						}else{
+							break;
 						}
 
 						distancePrec = distance;
 					}
 					if(tmp.size() == 5){
+						bulles.removeAll(tmp);
+						res.add(tmp);
+						ArrayList<Direction> aaa = couples.stream().filter((Direction dir)-> {
+								if(tmp.stream().anyMatch((Bulle b)-> dir.contains(b))) {
+										return false;
+								}else{
+										return true;
+								}
+							}
+						).collect(Collectors.toCollection(ArrayList<Direction>::new));
+						couples.removeAll(aaa);
 
 						break;
 					}
@@ -118,14 +138,14 @@ public class Direction extends ArrayList<Bulle> {
 					}
 				}
 			}
-		}
-        System.out.println(quatuor.size());
-        */
+		}*/
+        System.out.println(res.size());
+		System.out.println(bulles.size());
 		SingleGraph g = new SingleGraph("test");
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		int id=0;
-		for(int i=0; i<1;i++) {
-			Direction dir =quatuor.get(i);
+		for(int i=0; i<10;i++) {
+			Direction dir =res.get(i);
 			Node prec = null;
 
 			for (Bulle b : dir) {
@@ -147,9 +167,9 @@ public class Direction extends ArrayList<Bulle> {
 
 		}
 		g.display(false);
-        System.out.println(quatuor.get(0));
-        System.out.println(quatuor.get(1));
-        System.out.println(quatuor.get(2));
+        System.out.println(res.get(0));
+        System.out.println(res.get(1));
+        System.out.println(res.get(2));
 		return null;
 	}
 }
