@@ -52,12 +52,13 @@ public class Direction extends ArrayList<Bulle> {
 				for(int j = 0;j<bulles.size();j++) {
 					Bulle b = bulles.get(j);
 					double distance = b.getDistance(tmp.get(i));
-
+					double alpha = angleOrienté(b,tmp.get(i-1),tmp.get(i));
 					if (((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
-							&& distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION)))
+							&& distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))
 							&& ((ANGLE - (ANGLE * INTERVALLE_PRECISION)) < alpha)
 							&& (alpha < (ANGLE + (ANGLE * INTERVALLE_PRECISION)))) {
 
+						break;
 					}
 
 					distancePrec = distance;
