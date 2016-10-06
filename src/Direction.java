@@ -30,16 +30,16 @@ public class Direction extends ArrayList<Bulle> {
 
 	public static ArrayList<Direction> getDirection(ArrayList<Bulle> ar) {
 		ArrayList<Direction> couples = new ArrayList<Direction>();
-		ArrayList<Bulle> bulles = new ArrayList<Bulle>(ar);
-		ArrayList<Direction> res = new ArrayList<Direction>();
+		//ArrayList<Bulle> bulles = new ArrayList<Bulle>(ar);
+		//ArrayList<Direction> res = new ArrayList<Direction>();
 
-		for (Bulle b1 : bulles) {
-			for (Bulle b2 : bulles) {
+		for (Bulle b1 : ar) {
+			for (Bulle b2 : ar) {
 				if (!b1.equals(b2)) {
 					Direction dir = new Direction();
 					dir.add(b1);
 					dir.add(b2);
-
+					couples.add(dir);
 				}
 			}
 		}
@@ -141,7 +141,7 @@ public class Direction extends ArrayList<Bulle> {
 		SingleGraph g = new SingleGraph("test");
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		int id=0;
-		for(int i=0; i<10;i++) {
+		for(int i=0; i<3;i++) {
 			Direction dir =quatuor.get(i);
 			Node prec = null;
 
@@ -164,9 +164,9 @@ public class Direction extends ArrayList<Bulle> {
 
 		}
 		g.display(false);
-        System.out.println(res.get(0));
-        System.out.println(res.get(1));
-        System.out.println(res.get(2));
+        System.out.println(quatuor.get(0));
+        System.out.println(quatuor.get(1));
+        System.out.println(quatuor.get(2));
 		return null;
 	}
 }
