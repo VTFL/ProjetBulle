@@ -52,6 +52,7 @@ public class Direction extends ArrayList<Bulle> {
 			Direction tmp =couples.get(0);
 
 				for(int j = 0;j<bulles.size();j++) {
+
 					double distancePrec = tmp.get(0).getDistance(tmp.get(1));
 					//System.out.println(distancePrec);
 					for (int i = 2; i < 5; i++) {
@@ -59,11 +60,15 @@ public class Direction extends ArrayList<Bulle> {
 
 						double distance = b.getDistance(tmp.get(i-1));
 						double alpha = angleOrienté(b, tmp.get(i-1), tmp.get(i-2));
-
+						System.out.println();
+						System.out.println(distancePrec);
+						System.out.println(distance);
+						System.out.println();
 						if (((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
 								&& (distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION)))
 								&& (((ANGLE - (ANGLE * INTERVALLE_PRECISION)) < alpha ) || ((ANGLE - (ANGLE * INTERVALLE_PRECISION)*-1 > alpha )))
-								&& ((alpha < (ANGLE + (ANGLE * INTERVALLE_PRECISION))) || (alpha > (ANGLE + (ANGLE * INTERVALLE_PRECISION)*-1)))) {
+								&& ((alpha < (ANGLE + (ANGLE * INTERVALLE_PRECISION))) || (alpha > (ANGLE + (ANGLE * INTERVALLE_PRECISION)*-1)))
+								){
 								tmp.add(b);
 								distancePrec = distance;
 							System.out.println("yolo");
@@ -75,6 +80,7 @@ public class Direction extends ArrayList<Bulle> {
 
 					}
 					if(tmp.size() == 5){
+						System.out.println("ultrayolo");
 						bulles.removeAll(tmp);
 						res.add(tmp);
 						ArrayList<Direction> aaa = couples.stream().filter((Direction dir)-> {
@@ -143,7 +149,10 @@ public class Direction extends ArrayList<Bulle> {
         System.out.println(res.size());
 		System.out.println(bulles.size());
 		SingleGraph g = new SingleGraph("test");
-		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+
+		g.addAttribute("ui.antialias");
+		g.addAttribute("ui.quality");
+		//System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		int id=0;
 		for(int i=0; i<res.size();i++) {
 			Direction dir =res.get(i);
