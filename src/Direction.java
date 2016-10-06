@@ -46,24 +46,30 @@ public class Direction extends ArrayList<Bulle> {
 
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
 			Direction tmp =couples.get(0);
-			for (int i = 2; i < 5; i++) {
 
-				double distancePrec = tmp.get(1).getDistance(tmp.get(2));
+
+				double distancePrec = tmp.get(0).getDistance(tmp.get(1));
 				for(int j = 0;j<bulles.size();j++) {
-					Bulle b = bulles.get(j);
-					double distance = b.getDistance(tmp.get(i));
-					double alpha = angleOrienté(b,tmp.get(i-1),tmp.get(i));
-					if (((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
-							&& distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))
-							&& ((ANGLE - (ANGLE * INTERVALLE_PRECISION)) < alpha)
-							&& (alpha < (ANGLE + (ANGLE * INTERVALLE_PRECISION)))) {
+					for (int i = 2; i < 5; i++) {
+						Bulle b = bulles.get(j);
+						double distance = b.getDistance(tmp.get(i));
+						double alpha = angleOrienté(b, tmp.get(i - 1), tmp.get(i));
+						if (((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
+								&& distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))
+								&& ((ANGLE - (ANGLE * INTERVALLE_PRECISION)) < alpha)
+								&& (alpha < (ANGLE + (ANGLE * INTERVALLE_PRECISION)))) {
+								tmp.add(b);
+
+						}
+
+						distancePrec = distance;
+					}
+					if(tmp.size() == 5){
 
 						break;
 					}
-
-					distancePrec = distance;
 				}
-			}
+
 			couples.remove(0);
 		}
 		/*System.out.println(couples.size());
