@@ -6,6 +6,7 @@ import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,15 +19,21 @@ import java.io.IOException;
 public class IHM_Main extends JFrame {
     private JPanel pan_nord;
     private JPanel pan_ouest;
-    private JPanel pan_centre;
     private JPanel pan_sud;
     private JButton btn_choixFichier;
     private JLabel lbl_fichier;
+    private JLabel lbl_lstButlles;
 
-    private String nomFichier;
-    private static Graph graph;
+    //temporaire
+    private JTextArea txt_explicationLstBulles;
+
+
     private Viewer viewer;
     private View viewGraph;
+    private Graph graph;
+
+    private String nomFichier;
+
     public IHM_Main(){
         super("Projet Bulle");
 
@@ -38,16 +45,18 @@ public class IHM_Main extends JFrame {
         viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewGraph = viewer.addDefaultView(false);
 
-
+        //contient le choix du fichier de données
         pan_nord = new JPanel();
-        pan_centre = new JPanel();
-        pan_centre.setBackground(Color.black);
 
+        //menu de choix de bulles à afficher
+        //possibilité d'afficher chaques bulles dont la trajéctoire a été établie
+        //possibilité d'afficher d'une autre couleur la bulle séléctionnée sur le graphe
+        pan_ouest = new JPanel();//choix du layout à définir
 
+        // pan_nord
         btn_choixFichier=new JButton("Choix du fichier de données");
         lbl_fichier=new JLabel("Aucun fichier selectionné.");
         btn_choixFichier.addActionListener(new actionChoixFichier());
-
 
         JPanel p1 = new JPanel();
         p1.setLayout(new BoxLayout(p1, BoxLayout.LINE_AXIS));
@@ -56,22 +65,36 @@ public class IHM_Main extends JFrame {
         JPanel p2 = new JPanel();
         p2.setLayout(new BoxLayout(p2, BoxLayout.LINE_AXIS));
         p2.add(lbl_fichier);
+
         pan_nord.setLayout(new BoxLayout(pan_nord,BoxLayout.PAGE_AXIS));
         pan_nord.add(p1);
         pan_nord.add(p2);
 
-
-       // pan_centre.add((Component)view);
+        // pan ouest
+        lbl_lstButlles = new JLabel("Liste des bulles ");
+        txt_explicationLstBulles = new JTextArea("Affichage de toutes les bulles dont on a trouvé la trajectoire.");
+        txt_explicationLstBulles.setPreferredSize(new Dimension(194,360));
+        txt_explicationLstBulles.setLineWrap(true);
+        txt_explicationLstBulles.setWrapStyleWord(true);
+        txt_explicationLstBulles.setOpaque(false);
+        txt_explicationLstBulles.setEnabled(false);
+        txt_explicationLstBulles.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        pan_ouest.add(lbl_lstButlles);
+        pan_ouest.add(txt_explicationLstBulles);
+        pan_ouest.setPreferredSize(new Dimension(200,500));
+       // pan_ouest.setMinimumSize(new Dimension(500,500));
+        //------------------------------------------------------------//
 
         cont.add(pan_nord,BorderLayout.NORTH);
-
-        //affichage graph
+        cont.add(pan_ouest,BorderLayout.WEST);
         cont.add((Component)viewGraph,BorderLayout.CENTER);
+
         cont.setPreferredSize(new Dimension(900, 500));
+        cont.setMinimumSize(new Dimension(800, 400));
 
         pack();
         setVisible(true);
-        //	setResizable(false);
+        setResizable(false);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -79,7 +102,7 @@ public class IHM_Main extends JFrame {
     //action du bouton btn_choixFichier
     class actionChoixFichier implements ActionListener {
         public  void    actionPerformed(ActionEvent e) {
-            //selection d'un fichier
+            // selection d'un fichier
 
             // création de la boîte de dialogue
             JFileChooser dialogue = new JFileChooser();
@@ -92,6 +115,12 @@ public class IHM_Main extends JFrame {
             nomFichier=dialogue.getSelectedFile().getName();
             lbl_fichier.setText("Fichier séléctioné : "+nomFichier);
             //affichageGraph();
+            graph.addNode("ID1");
+            graph.getNode("ID1").setAttribute("x",0);
+            graph.getNode("ID1").setAttribute("y",0);
+            graph.addNode("ID2");
+            graph.getNode("ID2").setAttribute("x",1);
+            graph.getNode("ID2").setAttribute("y",10);
         }
     }
 
