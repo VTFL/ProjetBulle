@@ -1,3 +1,5 @@
+package main;
+import lib.libBulle;
 import java.util.ArrayList;
 
 /**
@@ -5,7 +7,7 @@ import java.util.ArrayList;
  */
 public class Main {
     public static void main(String[] args) {
-		ArrayList<Bulle> ar = Bulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt");
+		ArrayList<Bulle> ar = libBulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt");
         System.out.println(ar);
 		System.out.println(ar.get(4).getDistance(ar.get(5)));
 		Direction.getDirection(ar);
