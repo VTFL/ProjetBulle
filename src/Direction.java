@@ -66,56 +66,52 @@ public class Direction extends ArrayList<Bulle> {
 		// il faut retiré les doublons de couples
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
 				boolean sortieBoucle = false;
-				for(int j = 0;j<bulles.size() && !sortieBoucle;j++) {
-					Bulle b = bulles.get(j);
-					Direction resDir = new Direction();
-					resDir.add(couples.get(0).get(0));
-					resDir.add(couples.get(0).get(1));
+				Direction resDir = new Direction();
+				resDir.add(couples.get(0).get(0));
+				resDir.add(couples.get(0).get(1));
 
-					double distancePrec = resDir.get(0).getDistance(resDir.get(1));
+				double distancePrec = resDir.get(0).getDistance(resDir.get(1));
+					for (int i = 2; i < 5 &&!sortieBoucle; i++) {
 
-					for (int i = 2; i < 5 && !sortieBoucle ; i++) {
+						for(int j = 0;j<bulles.size() && !sortieBoucle;j++) {
+							Bulle b = bulles.get(j);
 
-						double distance = b.getDistance(resDir.get(i-1));
-						double alpha = angleOriente(b, resDir.get(i-1), resDir.get(i-2));
+							double distance = b.getDistance(resDir.get(i - 1));
+							double alpha = angleOriente(b, resDir.get(i - 1), resDir.get(i - 2));
 
-						if(i==3){
-							// la 4ème bulle
-							distancePrec = 2*distancePrec;
-						}
-						if ((((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
-								&& (distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))))
-								&& ((((alpha < ANGLE) && (alpha > 0)) || (alpha > ANGLE*-1) && (alpha < 0)))
-								){
+							if (i == 3) {
+								// la 4ème bulle
+								distancePrec = 2 * distancePrec;
+							}
+							if ((((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
+									&& (distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))))
+									&& ((((alpha < ANGLE) && (alpha > 0)) || (alpha > ANGLE * -1) && (alpha < 0)))
+									) {
 
 								resDir.add(b);
 								distancePrec = distance;
 
-							if(i==2){
-								sortieBoucle = true;
-								System.out.println("yolo");
+								if (i == 4) {
+									sortieBoucle = true;
+									//System.out.println(resDir.size());
 
-								bulles.removeAll(resDir);
-								res.add(resDir);
+									bulles.removeAll(resDir);
+									res.add(resDir);
 
-								ArrayList<Direction> aaa = couples.stream().filter((Direction dir)-> {
-											if(resDir.stream().anyMatch((Bulle bulle)-> dir.contains(bulle))) {
-												return true;
-											}else{
-												return false;
+									ArrayList<Direction> aaa = couples.stream().filter((Direction dir) -> {
+												if (resDir.stream().anyMatch((Bulle bulle) -> dir.contains(bulle))) {
+													return true;
+												} else {
+													return false;
+												}
 											}
-										}
-								).collect(Collectors.toCollection(ArrayList<Direction>::new));
-								couples.removeAll(aaa);
+									).collect(Collectors.toCollection(ArrayList<Direction>::new));
+									couples.removeAll(aaa);
+								}
 							}
-
-
-						}else{
-							break;
 						}
 
 
-					}
 
 				}
 
