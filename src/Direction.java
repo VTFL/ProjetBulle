@@ -2,6 +2,7 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +43,49 @@ public class Direction extends ArrayList<Bulle> {
 
 	}
 
+	public static boolean isBulleOK(Direction dir,Bulle b){
+		int i = dir.size();
+		double distance = b.getDistance(dir.get(i - 1));
+		double alpha = angleOriente(b, dir.get(i - 1), dir.get(i - 2));
+		double distancePrec = dir.get(i-2).getDistance(dir.get(i-1));
+		if (i == 3) {
+			// la 4ème bulle
+			distancePrec = 2 * distancePrec;
+		}
+		if ((((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
+				&& (distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))))
+				&& ((((alpha < ANGLE) && (alpha > 0)) || (alpha > ANGLE * -1) && (alpha < 0)))
+				){
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	public static Direction ajoutBulleTrajectoire(ArrayList<Bulle> bulles,Direction dir){
+		return ajoutBulleTrajectoire(bulles.iterator(),dir);
+	}
+
+	public static Direction ajoutBulleTrajectoire(Iterator<Bulle> it, Direction dir){
+		Direction res = new Direction();
+		Bulle bulle = it.next();
+
+		if(isBulleOK(dir,bulle) && dir.size()==4){
+			dir.add(bulle);
+			res = dir;
+		}else if(isBulleOK(dir,bulle) && it.hasNext()){
+			for(Bulle b : dir){res.add(b);}
+			res.add(bulle);
+			res = ajoutBulleTrajectoire(it,res);
+		}else if(it.hasNext()){
+			res = ajoutBulleTrajectoire(it,dir);
+		}else{
+			res=null;
+		}
+		return res;
+	}
+
+
 
 	public static ArrayList<Direction> getDirection(ArrayList<Bulle> ar) {
 		ArrayList<Direction> couples = new ArrayList<Direction>();
@@ -63,8 +107,32 @@ public class Direction extends ArrayList<Bulle> {
 			}
 		}
 
-		// il faut retiré les doublons de couples
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
+
+			Direction tmp = ajoutBulleTrajectoire(bulles,couples.get(0));
+			if(tmp == null){
+
+			}else{
+
+				bulles.removeAll(tmp);
+				res.add(tmp);
+
+				ArrayList<Direction> aaa = couples.stream().filter((Direction dir) -> {
+							if (tmp.stream().anyMatch((Bulle bulle) -> dir.contains(bulle))) {
+								return true;
+							} else {
+								return false;
+							}
+						}
+				).collect(Collectors.toCollection(ArrayList<Direction>::new));
+				couples.removeAll(aaa);
+			}
+
+			couples.remove(0);
+		}
+
+		// il faut retiré les doublons de couples
+		/*while((!bulles.isEmpty()) && (!couples.isEmpty())){
 				boolean sortieBoucle = false;
 				Direction resDir = new Direction();
 				resDir.add(couples.get(0).get(0));
@@ -116,7 +184,7 @@ public class Direction extends ArrayList<Bulle> {
 				}
 
 			couples.remove(0);
-		}
+		}*/
 
         System.out.println(res.size());
 		System.out.println(bulles.size());
