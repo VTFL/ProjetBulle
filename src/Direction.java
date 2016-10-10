@@ -9,8 +9,9 @@ import java.util.stream.Collectors;
  * Created by Utilisateur on 03/10/2016.
  */
 public class Direction extends ArrayList<Bulle> {
-	final static double INTERVALLE_PRECISION = 0.20;
-	final static double ANGLE = 20*Math.PI/180; // radian
+	final static double INTERVALLE_PRECISION = 0.10;
+	final static double ANGLE = 150*Math.PI/180; // radian
+	final static double DISTANCE_MAX = 1;
 	//0,2 m/s (xy) 0,1m/s(z)
 	// dt = 2ms
 	// 4x10-3 um
@@ -46,15 +47,19 @@ public class Direction extends ArrayList<Bulle> {
 	public static boolean isBulleOK(Direction dir,Bulle b){
 		int i = dir.size();
 		double distance = b.getDistance(dir.get(i - 1));
-		double alpha = angleOriente(b, dir.get(i - 1), dir.get(i - 2));
+		double alpha = angleOriente(b, dir.get(i - 2), dir.get(i - 1));
 		double distancePrec = dir.get(i-2).getDistance(dir.get(i-1));
 		if (i == 3) {
 			// la 4ème bulle
 			distancePrec = 2 * distancePrec;
 		}
+		if (i == 4) {
+			// la 5ème bulle
+			distancePrec = distancePrec/2;
+		}
 		if ((((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
 				&& (distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))))
-				&& ((((alpha < ANGLE) && (alpha > 0)) || (alpha > ANGLE * -1) && (alpha < 0)))
+				&& ((((alpha > ANGLE) ) || (alpha < ANGLE * -1) ))
 				){
 			return true;
 		}else {
@@ -65,7 +70,7 @@ public class Direction extends ArrayList<Bulle> {
 	public static Direction ajoutBulleTrajectoire(ArrayList<Bulle> bulles,Direction dir){
 		return ajoutBulleTrajectoire(bulles.iterator(),dir);
 	}
-
+	// a faire : privilégier les + proches
 	public static Direction ajoutBulleTrajectoire(Iterator<Bulle> it, Direction dir){
 		Direction res = new Direction();
 		Bulle bulle = it.next();
@@ -94,18 +99,15 @@ public class Direction extends ArrayList<Bulle> {
 
 		for (Bulle b1 : bulles) {
 			for (Bulle b2 : bulles) {
-				if (!b1.equals(b2)) {
+				if (!b1.equals(b2) && b1.getDistance(b2)<DISTANCE_MAX) {
 					Direction dir = new Direction();
 					dir.add(b1);
 					dir.add(b2);
-					/*if(!couples.stream().anyMatch((Direction d) -> d.contains(b1) && d.contains(b2))){
-						couples.add(dir);
-					}*/
 					couples.add(dir);
-
 				}
 			}
 		}
+		couples.sort((o1, o2) -> {if(o1.get(0).getDistance(o1.get(1)) > o2.get(0).getDistance(o2.get(1)))return 1; else return-1;});
 
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
 
@@ -130,61 +132,6 @@ public class Direction extends ArrayList<Bulle> {
 
 			couples.remove(0);
 		}
-
-		// il faut retiré les doublons de couples
-		/*while((!bulles.isEmpty()) && (!couples.isEmpty())){
-				boolean sortieBoucle = false;
-				Direction resDir = new Direction();
-				resDir.add(couples.get(0).get(0));
-				resDir.add(couples.get(0).get(1));
-
-				double distancePrec = resDir.get(0).getDistance(resDir.get(1));
-					for (int i = 2; i < 5 &&!sortieBoucle; i++) {
-
-						for(int j = 0;j<bulles.size() && !sortieBoucle;j++) {
-							Bulle b = bulles.get(j);
-
-							double distance = b.getDistance(resDir.get(i - 1));
-							double alpha = angleOriente(b, resDir.get(i - 1), resDir.get(i - 2));
-
-							if (i == 3) {
-								// la 4ème bulle
-								distancePrec = 2 * distancePrec;
-							}
-							if ((((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
-									&& (distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))))
-									&& ((((alpha < ANGLE) && (alpha > 0)) || (alpha > ANGLE * -1) && (alpha < 0)))
-									) {
-
-								resDir.add(b);
-								distancePrec = distance;
-
-								if (i == 4) {
-									sortieBoucle = true;
-									//System.out.println(resDir.size());
-
-									bulles.removeAll(resDir);
-									res.add(resDir);
-
-									ArrayList<Direction> aaa = couples.stream().filter((Direction dir) -> {
-												if (resDir.stream().anyMatch((Bulle bulle) -> dir.contains(bulle))) {
-													return true;
-												} else {
-													return false;
-												}
-											}
-									).collect(Collectors.toCollection(ArrayList<Direction>::new));
-									couples.removeAll(aaa);
-								}
-							}
-						}
-
-
-
-				}
-
-			couples.remove(0);
-		}*/
 
         System.out.println(res.size());
 		System.out.println(bulles.size());
