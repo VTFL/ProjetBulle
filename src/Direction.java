@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
  */
 public class Direction extends ArrayList<Bulle> {
 	final static double INTERVALLE_PRECISION = 0.10;
-	final static double ANGLE = 150*Math.PI/180; // radian
-	final static double DISTANCE_MAX = 1;
+	final static double ANGLE = 145*Math.PI/180; // radian
+	final static double DISTANCE_MAX = 1.5;
 	//0,2 m/s (xy) 0,1m/s(z)
 	// dt = 2ms
 	// 4x10-3 um
@@ -70,7 +70,7 @@ public class Direction extends ArrayList<Bulle> {
 	public static Direction ajoutBulleTrajectoire(ArrayList<Bulle> bulles,Direction dir){
 		return ajoutBulleTrajectoire(bulles.iterator(),dir);
 	}
-	// a faire : privilégier les + proches
+
 	public static Direction ajoutBulleTrajectoire(Iterator<Bulle> it, Direction dir){
 		Direction res = new Direction();
 		Bulle bulle = it.next();
@@ -110,6 +110,7 @@ public class Direction extends ArrayList<Bulle> {
 		couples.sort((o1, o2) -> {if(o1.get(0).getDistance(o1.get(1)) > o2.get(0).getDistance(o2.get(1)))return 1; else return-1;});
 
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
+			bulles.sort((o1, o2) -> {if(o1.getDistance(couples.get(0).get(1)) > o2.getDistance(couples.get(0).get(1)))return 1; else return-1;});
 
 			Direction tmp = ajoutBulleTrajectoire(bulles,couples.get(0));
 			if(tmp == null){
