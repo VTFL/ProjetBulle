@@ -5,9 +5,11 @@ package ihm;
  */
 public class IHM_Fichier {
 
-        public static void test2 () {
-            System.out.println("Coucou");
-        }
+    public static void test2 () {
+        System.out.println("Coucou");
+    }
+
+    public void isOkMabite() {}
 
     public static void isOk2(){
         int i=1+1;
