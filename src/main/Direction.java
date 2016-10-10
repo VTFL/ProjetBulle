@@ -1,31 +1,14 @@
+package main;
+
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
-
+import lib.*;
 /**
  * Created by Utilisateur on 03/10/2016.
  */
 public class Direction extends ArrayList<Bulle> {
-	final static double INTERVALLE_PRECISION = 0.10;
-	final static double ANGLE = 20*Math.PI/180; // radian
-
-	//renvoi un angle alpha a partir des distance a b et c
-	public static double alKashi(double a,double b,double c){
-		return Math.acos((Math.pow(a,2) + Math.pow(b,2) - Math.pow(c,2))/(2*a*b));
-	}
-	public static double det( Bulle a, Bulle b){
-		return (a.getX() + b.getY()) - (a.getY()+b.getX());
-	}
-	public static double angleOrienté(Bulle a,Bulle b,Bulle c){
-		//System.out.println(det(a,b));
-		if(det(a,b) < 0){
-			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b));
-		}else{
-			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b))*-1;
-		}
-	}
 
 
 	public static ArrayList<Direction> getDirection(ArrayList<Bulle> ar) {
@@ -95,8 +78,8 @@ public class Direction extends ArrayList<Bulle> {
 			Double d = couple.get(0).getDistance(couple.get(1));
 			for(Bulle b3 : ar) {
 				if(!couple.stream().anyMatch((Bulle b) -> b.equals(b3))){
-					if(d-(d*INTERVALLE_PRECISION)< b3.getDistance(couple.get(1))
-							&& b3.getDistance(couple.get(1))< d+(d*INTERVALLE_PRECISION)) {
+					if(d-(d*libDirection.INTERVALLE_PRECISION)< b3.getDistance(couple.get(1))
+							&& b3.getDistance(couple.get(1))< d+(d*libDirection.INTERVALLE_PRECISION)) {
 						Direction dir = new Direction();
 						dir.add(couple.get(0));
 						dir.add(couple.get(1));
@@ -113,18 +96,18 @@ public class Direction extends ArrayList<Bulle> {
 		for(Direction triplet : triplets){
 			Double d = triplet.get(1).getDistance(triplet.get(2));
 
-			double alpha = angleOrienté(triplet.get(0),triplet.get(2),triplet.get(1));
+			double alpha = libDirection.angleOrienté(triplet.get(0),triplet.get(2),triplet.get(1));
 			//System.out.println(alpha);
 			for(Bulle b4 : ar) {
 				if(!triplet.stream().anyMatch((Bulle bulle) -> bulle.equals(b4))){
 
-					double beta = angleOrienté(triplet.get(1),b4,triplet.get(2));
+					double beta = libDirection.angleOrienté(triplet.get(1),b4,triplet.get(2));
 					//System.out.println(alpha);
 
-					if(((d-(d*INTERVALLE_PRECISION))< b4.getDistance(triplet.get(2)))
-							&& (b4.getDistance(triplet.get(2))< (d+(d*INTERVALLE_PRECISION)))
-							&& ((alpha-(alpha*INTERVALLE_PRECISION))< beta)
-							&& (beta < (alpha+(alpha*INTERVALLE_PRECISION))) ) {
+					if(((d-(d*libDirection.INTERVALLE_PRECISION))< b4.getDistance(triplet.get(2)))
+							&& (b4.getDistance(triplet.get(2))< (d+(d*libDirection.INTERVALLE_PRECISION)))
+							&& ((alpha-(alpha*libDirection.INTERVALLE_PRECISION))< beta)
+							&& (beta < (alpha+(alpha*libDirection.INTERVALLE_PRECISION))) ) {
 
 						Direction dir = new Direction();
 						for(Bulle bulle : triplet){
