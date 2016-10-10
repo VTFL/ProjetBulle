@@ -85,7 +85,6 @@ public class Direction extends ArrayList<Bulle> {
 						dir.add(couple.get(1));
 						dir.add(b3);
 						triplets.add(dir);
-
 					}
 				}
 			}
