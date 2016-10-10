@@ -8,22 +8,26 @@ import java.util.ArrayList;
 public class Bulle {
 	private double x;
 	private double y;
-	private double z;
+	private double truc1;
+	private double truc2;
+	private double truc3;
 
 
 
-	public Bulle(double x, double y, double z) {
+	public Bulle(double x, double y,double truc1, double truc2, double truc3) {
 		this.x = x;
 		this.y = y;
-		this.z = z;
+		this.truc1 = truc1;
+		this.truc2 = truc2;
+		this.truc3 = truc3;
+
 	}
 
 
 
 	public Double getDistance(Bulle b){
 		return Math.sqrt(Math.pow(this.getX()-b.getX(),2) +
-				Math.pow(this.getY()-b.getY(),2) +
-				Math.pow(this.getZ()-b.getZ(),2));
+				Math.pow(this.getY()-b.getY(),2));
 	}
 
 	public double getX() {
@@ -42,12 +46,28 @@ public class Bulle {
 		this.y = y;
 	}
 
-	public double getZ() {
-		return z;
+	public double getTruc1() {
+		return truc1;
 	}
 
-	public void setZ(double z) {
-		this.z = z;
+	public void setTruc1(double truc1) {
+		this.truc1 = truc1;
+	}
+
+	public double getTruc2() {
+		return truc2;
+	}
+
+	public void setTruc2(double truc2) {
+		this.truc2 = truc2;
+	}
+
+	public double getTruc3() {
+		return truc3;
+	}
+
+	public void setTruc3(double truc3) {
+		this.truc3 = truc3;
 	}
 
 	@Override
@@ -55,7 +75,9 @@ public class Bulle {
 		return "Bulle{" +
 				"x=" + x +
 				", y=" + y +
-				", z=" + z +
+				", truc1=" + truc1 +
+				", truc2=" + truc2 +
+				", truc3=" + truc3 +
 				'}';
 	}
 }

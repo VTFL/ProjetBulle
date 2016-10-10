@@ -1,5 +1,5 @@
 package ihm;
-
+import main.*;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.view.View;
@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 
 /**
  * Created by valentinpitel on 06/10/2016.
@@ -135,5 +137,20 @@ public class IHM_Main extends JFrame {
 
     public static void main(String[] arg) {
         IHM_Main test = new IHM_Main();
+    }
+
+    public void saveFile(ArrayList<Direction> directions,String nomFichier){
+        try{
+            PrintWriter writer = new PrintWriter(nomFichier.split(".")[0]+"traité.txt", "UTF-8");
+            for(Direction dir : directions){
+                for(Bulle b : dir){
+
+                }
+            }
+            writer.println("The first line");
+            writer.println("The second line");
+            writer.close();
+        }catch(Exception e){System.out.println("probleme lors de l'enregistrement du fichier. Code d'erreur 0x1");}
+
     }
 }
