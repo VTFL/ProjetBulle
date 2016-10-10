@@ -142,15 +142,15 @@ public class IHM_Main extends JFrame {
     public void saveFile(ArrayList<Direction> directions,String nomFichier){
         try{
             PrintWriter writer = new PrintWriter(nomFichier.split(".")[0]+"traité.txt", "UTF-8");
+            int i=1;
             for(Direction dir : directions){
                 for(Bulle b : dir){
-
+                    writer.println(b+"   "+i);
                 }
+                i++;
             }
-            writer.println("The first line");
-            writer.println("The second line");
             writer.close();
-        }catch(Exception e){System.out.println("probleme lors de l'enregistrement du fichier. Code d'erreur 0x1");}
+        }catch(Exception e){System.out.println("Probleme lors de l'enregistrement du fichier. Code d'erreur 0x1");}
 
     }
 }

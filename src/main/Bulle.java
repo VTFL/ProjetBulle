@@ -72,12 +72,6 @@ public class Bulle {
 
 	@Override
 	public String toString() {
-		return "Bulle{" +
-				"x=" + x +
-				", y=" + y +
-				", truc1=" + truc1 +
-				", truc2=" + truc2 +
-				", truc3=" + truc3 +
-				'}';
+		return "   "+x+"   "+y+"   "+truc1+"   "+truc2+"   "+truc3;
 	}
 }
