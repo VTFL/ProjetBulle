@@ -33,12 +33,13 @@ public class Bulle {
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+
 		}
 		return null;
 	}
 	public Double getDistance(Bulle b){
 		return Math.sqrt(Math.pow(this.getX()-b.getX(),2) +
-				Math.pow(this.getY()-b.getY(),2) );
+				Math.pow(this.getY()-b.getY(),2));
 				//Math.pow(this.getZ()-b.getZ(),2));
 	}
 
