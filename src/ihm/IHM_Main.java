@@ -33,6 +33,7 @@ public class IHM_Main extends JFrame {
     private Graph graph;
 
     private String nomFichier;
+    private static String aucunFichier;
 
     public IHM_Main(){
         super("Projet Bulle");
@@ -40,6 +41,7 @@ public class IHM_Main extends JFrame {
         Container cont = getContentPane();
 
         this.nomFichier=null;
+        this.aucunFichier="Aucun fichier selectionné.";
 
         graph = new SingleGraph("Test");
         viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
@@ -55,7 +57,7 @@ public class IHM_Main extends JFrame {
 
         // pan_nord
         btn_choixFichier=new JButton("Choix du fichier de données");
-        lbl_fichier=new JLabel("Aucun fichier selectionné.");
+        lbl_fichier=new JLabel(aucunFichier);
         btn_choixFichier.addActionListener(new actionChoixFichier());
 
         JPanel p1 = new JPanel();
@@ -108,19 +110,25 @@ public class IHM_Main extends JFrame {
             JFileChooser dialogue = new JFileChooser();
 
             // affichage
-            dialogue.showOpenDialog(null);
+            int returnVal=dialogue.showOpenDialog(null);
 
             // récupération du fichier sélectionné
             System.out.println("Path du fichier choisi : " + dialogue.getSelectedFile());
-            nomFichier=dialogue.getSelectedFile().getName();
-            lbl_fichier.setText("Fichier séléctioné : "+nomFichier);
-            //affichageGraph();
-            graph.addNode("ID1");
-            graph.getNode("ID1").setAttribute("x",0);
-            graph.getNode("ID1").setAttribute("y",0);
-            graph.addNode("ID2");
-            graph.getNode("ID2").setAttribute("x",1);
-            graph.getNode("ID2").setAttribute("y",10);
+            if (returnVal != JFileChooser.APPROVE_OPTION) {
+                lbl_fichier.setText(aucunFichier);
+            }else{
+                nomFichier=dialogue.getSelectedFile().getName();
+
+                lbl_fichier.setText("Fichier séléctioné : "+nomFichier);
+                //affichageGraph();
+                graph.addNode("ID1");
+                graph.getNode("ID1").setAttribute("x",0);
+                graph.getNode("ID1").setAttribute("y",0);
+                graph.addNode("ID2");
+                graph.getNode("ID2").setAttribute("x",1);
+                graph.getNode("ID2").setAttribute("y",10);
+            }
+
         }
     }
 
