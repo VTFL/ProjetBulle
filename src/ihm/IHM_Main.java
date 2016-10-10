@@ -113,6 +113,7 @@ public class IHM_Main extends JFrame {
             int returnVal=dialogue.showOpenDialog(null);
 
             // récupération du fichier sélectionné
+            //test
             System.out.println("Path du fichier choisi : " + dialogue.getSelectedFile());
             if (returnVal != JFileChooser.APPROVE_OPTION) {
                 lbl_fichier.setText(aucunFichier);
