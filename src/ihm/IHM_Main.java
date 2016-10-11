@@ -10,8 +10,6 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -139,11 +137,11 @@ public class IHM_Main extends JFrame {
         IHM_Main test = new IHM_Main();
     }
 
-    public void saveFile(ArrayList<Direction> directions,String nomFichier){
+    public void saveFile(ArrayList<Trajectoire> trajectoires, String nomFichier){
         try{
             PrintWriter writer = new PrintWriter(nomFichier.split(".")[0]+"traité.txt", "UTF-8");
             int i=1;
-            for(Direction dir : directions){
+            for(Trajectoire dir : trajectoires){
                 for(Bulle b : dir){
                     writer.println(b+"   "+i);
                 }

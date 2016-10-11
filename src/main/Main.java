@@ -13,7 +13,7 @@ public class Main {
 		ArrayList<Bulle> bulles = libBulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt");
         System.out.println(bulles);
 		System.out.println(bulles.get(4).getDistance(bulles.get(5)));
-		ArrayList<Direction> res =Direction.getDirection(bulles);
+		ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles);
 
 		System.out.println(res.size());
 		SingleGraph g = new SingleGraph("test");
@@ -22,7 +22,7 @@ public class Main {
 		g.addAttribute("ui.quality");
 		int id=0;
 		for(int i=0; i<res.size();i++) {
-			Direction dir =res.get(i);
+			Trajectoire dir =res.get(i);
 			Node prec = null;
 
 			for (Bulle b : dir) {
