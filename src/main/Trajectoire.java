@@ -66,8 +66,8 @@ public class Trajectoire extends ArrayList<Bulle> {
 		}
 	}
 
-	public static Trajectoire ajoutBulleTrajectoire(ArrayList<Bulle> bulles,Trajectoire dir){
-		return dir.ajoutBulleTrajectoire(bulles.iterator());
+	public Trajectoire ajoutBulleTrajectoire(ArrayList<Bulle> bulles){
+		return this.ajoutBulleTrajectoire(bulles.iterator());
 	}
 
 	public Trajectoire ajoutBulleTrajectoire(Iterator<Bulle> it){
@@ -111,7 +111,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
 			bulles.sort((o1, o2) -> {if(o1.getDistance(couples.get(0).get(1)) > o2.getDistance(couples.get(0).get(1)))return 1; else return-1;});
 
-			Trajectoire tmp = ajoutBulleTrajectoire(bulles,couples.get(0));
+			Trajectoire tmp = couples.get(0).ajoutBulleTrajectoire(bulles);
 			if(tmp == null){
 
 			}else{
