@@ -11,6 +11,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 	final static double INTERVALLE_PRECISION = 0.10;
 	final static double ANGLE = 145*Math.PI/180; // radian
 	final static double DISTANCE_MAX = 1.5;
+	final static double POIDS_ANGLE = 1;
 	//0,2 m/s (xy) 0,1m/s(z)
 	// dt = 2ms
 
@@ -89,6 +90,26 @@ public class Trajectoire extends ArrayList<Bulle> {
 		return res;
 	}
 
+	public int heuristique1(Bulle b1, Bulle b2){
+		int i = this.size();
+		double distance1 = b1.getDistance(this.get(i - 1));
+		double alpha1 = Math.abs(angleOriente(b1, this.get(i - 2), this.get(i - 1)));
+		double distance2 = b2.getDistance(this.get(i - 1));
+		double alpha2 = Math.abs(angleOriente(b2, this.get(i - 2), this.get(i - 1)));
+		double x = DISTANCE_MAX / Math.PI; // la valeur qui sert a pondéré les angle et la distance pour avoir un rapport égale entre les deux avec DISTANCE_MAX = ANGLE_MAX*x
+		double val1 = (alpha1*x)*POIDS_ANGLE-distance1;
+		double val2 = (alpha2*x)*POIDS_ANGLE-distance2;
+		System.out.println(distance1);
+		System.out.println(distance2);
+		if(val1 < val2){
+			return 1;
+		}else if(val1 > val2){
+			return -1;
+		}else{
+			return 0;
+		}
+	}
+
 
 
 	public static ArrayList<Trajectoire> getDirection(ArrayList<Bulle> ar) {
@@ -110,6 +131,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
 			bulles.sort((o1, o2) -> {if(o1.getDistance(couples.get(0).get(1)) > o2.getDistance(couples.get(0).get(1)))return 1; else return-1;});
+			//bulles.sort((o1, o2) -> couples.get(0).heuristique1(o1,o2) );
 
 			Trajectoire tmp = couples.get(0).ajoutBulleTrajectoire(bulles);
 			if(tmp == null){
