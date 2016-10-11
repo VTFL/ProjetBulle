@@ -43,11 +43,11 @@ public class Trajectoire extends ArrayList<Bulle> {
 
 	}
 
-	public static boolean isBulleOK(Trajectoire dir, Bulle b){
-		int i = dir.size();
-		double distance = b.getDistance(dir.get(i - 1));
-		double alpha = angleOriente(b, dir.get(i - 2), dir.get(i - 1));
-		double distancePrec = dir.get(i-2).getDistance(dir.get(i-1));
+	public boolean isBulleOK( Bulle b){
+		int i = this.size();
+		double distance = b.getDistance(this.get(i - 1));
+		double alpha = angleOriente(b, this.get(i - 2), this.get(i - 1));
+		double distancePrec = this.get(i-2).getDistance(this.get(i-1));
 		if (i == 3) {
 			// la 4ème bulle
 			distancePrec = 2 * distancePrec;
@@ -74,10 +74,10 @@ public class Trajectoire extends ArrayList<Bulle> {
 		Trajectoire res = new Trajectoire();
 		Bulle bulle = it.next();
 
-		if(isBulleOK(this,bulle) && this.size()==4){
+		if(this.isBulleOK(bulle) && this.size()==4){
 			this.add(bulle);
 			res = this;
-		}else if(isBulleOK(this,bulle) && it.hasNext()){
+		}else if(this.isBulleOK(bulle) && it.hasNext()){
 			for(Bulle b : this){res.add(b);}
 			res.add(bulle);
 			res = res.ajoutBulleTrajectoire(it);
