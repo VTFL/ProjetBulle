@@ -13,7 +13,7 @@ public class libDirection {
         return Math.acos((Math.pow(a,2) + Math.pow(b,2) - Math.pow(c,2))/(2*a*b));
     }
     public static double det(Bulle a, Bulle b){
-        return (a.getX() + b.getY()) - (a.getY()+b.getX());
+        return (a.getX() * b.getY()) - (a.getY()*b.getX());
     }
     public static double angleOrienté(Bulle a,Bulle b,Bulle c){
         //System.out.println(det(a,b));

@@ -166,9 +166,7 @@ public class Direction extends ArrayList<Bulle> {
 
 		}
 		g.display(false);
-        //System.out.println(res.get(0));
-        //System.out.println(res.get(1));
-        //System.out.println(res.get(2));
-		return null;
+
+		return res;
 	}
 }
