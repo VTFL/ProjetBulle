@@ -136,36 +136,6 @@ public class Direction extends ArrayList<Bulle> {
 			couples.remove(0);
 		}
 
-        System.out.println(res.size());
-		System.out.println(bulles.size());
-		SingleGraph g = new SingleGraph("test");
-
-		g.addAttribute("ui.antialias");
-		g.addAttribute("ui.quality");
-		int id=0;
-		for(int i=0; i<res.size();i++) {
-			Direction dir =res.get(i);
-			Node prec = null;
-
-			for (Bulle b : dir) {
-				g.addNode(id+ "");
-				Node n = g.getNode(id+"");
-				if(n!=null) {
-					id++;
-					n.setAttribute("xy", b.getX(), b.getY());
-					if (prec != null) {
-						g.addEdge(id + prec.getId(), n, prec);
-						id++;
-					}
-					prec = n;
-				}
-
-			}
-
-
-
-		}
-		g.display(false);
 
 		return res;
 	}
