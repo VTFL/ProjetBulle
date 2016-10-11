@@ -13,8 +13,4 @@ public class Main {
 		Direction.getDirection(ar);
 		//ajout commit
 	}
-
-
-
-
 }
