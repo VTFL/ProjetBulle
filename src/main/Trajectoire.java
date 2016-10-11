@@ -1,8 +1,5 @@
 package main;
 
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.SingleGraph;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.stream.Collectors;
@@ -10,7 +7,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Utilisateur on 03/10/2016.
  */
-public class Direction extends ArrayList<Bulle> {
+public class Trajectoire extends ArrayList<Bulle> {
 	final static double INTERVALLE_PRECISION = 0.10;
 	final static double ANGLE = 145*Math.PI/180; // radian
 	final static double DISTANCE_MAX = 1.5;
@@ -41,12 +38,12 @@ public class Direction extends ArrayList<Bulle> {
 		c = new Bulle(2,1,0);
 		d = new Bulle(1,0,0);
 		o = new Bulle(1,1,0);
-		System.out.println(Direction.angleOriente(c,b,o)*180/Math.PI);
+		System.out.println(Trajectoire.angleOriente(c,b,o)*180/Math.PI);
 		System.out.println(c.getDistance(d));
 
 	}
 
-	public static boolean isBulleOK(Direction dir,Bulle b){
+	public static boolean isBulleOK(Trajectoire dir, Bulle b){
 		int i = dir.size();
 		double distance = b.getDistance(dir.get(i - 1));
 		double alpha = angleOriente(b, dir.get(i - 2), dir.get(i - 1));
@@ -69,23 +66,23 @@ public class Direction extends ArrayList<Bulle> {
 		}
 	}
 
-	public static Direction ajoutBulleTrajectoire(ArrayList<Bulle> bulles,Direction dir){
-		return ajoutBulleTrajectoire(bulles.iterator(),dir);
+	public static Trajectoire ajoutBulleTrajectoire(ArrayList<Bulle> bulles,Trajectoire dir){
+		return dir.ajoutBulleTrajectoire(bulles.iterator());
 	}
 
-	public static Direction ajoutBulleTrajectoire(Iterator<Bulle> it, Direction dir){
-		Direction res = new Direction();
+	public Trajectoire ajoutBulleTrajectoire(Iterator<Bulle> it){
+		Trajectoire res = new Trajectoire();
 		Bulle bulle = it.next();
 
-		if(isBulleOK(dir,bulle) && dir.size()==4){
-			dir.add(bulle);
-			res = dir;
-		}else if(isBulleOK(dir,bulle) && it.hasNext()){
-			for(Bulle b : dir){res.add(b);}
+		if(isBulleOK(this,bulle) && this.size()==4){
+			this.add(bulle);
+			res = this;
+		}else if(isBulleOK(this,bulle) && it.hasNext()){
+			for(Bulle b : this){res.add(b);}
 			res.add(bulle);
-			res = ajoutBulleTrajectoire(it,res);
+			res = res.ajoutBulleTrajectoire(it);
 		}else if(it.hasNext()){
-			res = ajoutBulleTrajectoire(it,dir);
+			res = this.ajoutBulleTrajectoire(it);
 		}else{
 			res=null;
 		}
@@ -94,15 +91,15 @@ public class Direction extends ArrayList<Bulle> {
 
 
 
-	public static ArrayList<Direction> getDirection(ArrayList<Bulle> ar) {
-		ArrayList<Direction> couples = new ArrayList<Direction>();
+	public static ArrayList<Trajectoire> getDirection(ArrayList<Bulle> ar) {
+		ArrayList<Trajectoire> couples = new ArrayList<Trajectoire>();
 		ArrayList<Bulle> bulles = new ArrayList<Bulle>(ar);
-		ArrayList<Direction> res = new ArrayList<Direction>();
+		ArrayList<Trajectoire> res = new ArrayList<Trajectoire>();
 
 		for (Bulle b1 : bulles) {
 			for (Bulle b2 : bulles) {
 				if (!b1.equals(b2) && b1.getDistance(b2)<DISTANCE_MAX) {
-					Direction dir = new Direction();
+					Trajectoire dir = new Trajectoire();
 					dir.add(b1);
 					dir.add(b2);
 					couples.add(dir);
@@ -114,7 +111,7 @@ public class Direction extends ArrayList<Bulle> {
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
 			bulles.sort((o1, o2) -> {if(o1.getDistance(couples.get(0).get(1)) > o2.getDistance(couples.get(0).get(1)))return 1; else return-1;});
 
-			Direction tmp = ajoutBulleTrajectoire(bulles,couples.get(0));
+			Trajectoire tmp = ajoutBulleTrajectoire(bulles,couples.get(0));
 			if(tmp == null){
 
 			}else{
@@ -122,50 +119,20 @@ public class Direction extends ArrayList<Bulle> {
 				bulles.removeAll(tmp);
 				res.add(tmp);
 
-				ArrayList<Direction> aaa = couples.stream().filter((Direction dir) -> {
+				ArrayList<Trajectoire> aaa = couples.stream().filter((Trajectoire dir) -> {
 							if (tmp.stream().anyMatch((Bulle bulle) -> dir.contains(bulle))) {
 								return true;
 							} else {
 								return false;
 							}
 						}
-				).collect(Collectors.toCollection(ArrayList<Direction>::new));
+				).collect(Collectors.toCollection(ArrayList<Trajectoire>::new));
 				couples.removeAll(aaa);
 			}
 
 			couples.remove(0);
 		}
 
-        System.out.println(res.size());
-		System.out.println(bulles.size());
-		SingleGraph g = new SingleGraph("test");
-
-		g.addAttribute("ui.antialias");
-		g.addAttribute("ui.quality");
-		int id=0;
-		for(int i=0; i<res.size();i++) {
-			Direction dir =res.get(i);
-			Node prec = null;
-
-			for (Bulle b : dir) {
-				g.addNode(id+ "");
-				Node n = g.getNode(id+"");
-				if(n!=null) {
-					id++;
-					n.setAttribute("xy", b.getX(), b.getY());
-					if (prec != null) {
-						g.addEdge(id + prec.getId(), n, prec);
-						id++;
-					}
-					prec = n;
-				}
-
-			}
-
-
-
-		}
-		g.display(false);
 
 		return res;
 	}
