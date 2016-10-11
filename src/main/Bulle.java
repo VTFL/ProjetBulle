@@ -8,19 +8,25 @@ import java.util.ArrayList;
 public class Bulle {
 	private double x;
 	private double y;
-	private double truc1;
+	private double z;
 	private double truc2;
 	private double truc3;
 
 
 
-	public Bulle(double x, double y,double truc1, double truc2, double truc3) {
+	public Bulle(double x, double y,double z, double truc2, double truc3) {
 		this.x = x;
 		this.y = y;
-		this.truc1 = truc1;
+		this.z = z;
 		this.truc2 = truc2;
 		this.truc3 = truc3;
 
+	}
+
+	public Bulle(double x, double y,double z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 
 
@@ -47,11 +53,11 @@ public class Bulle {
 	}
 
 	public double getTruc1() {
-		return truc1;
+		return z;
 	}
 
 	public void setTruc1(double truc1) {
-		this.truc1 = truc1;
+		this.z = truc1;
 	}
 
 	public double getTruc2() {
@@ -72,6 +78,6 @@ public class Bulle {
 
 	@Override
 	public String toString() {
-		return "   "+x+"   "+y+"   "+truc1+"   "+truc2+"   "+truc3;
+		return "   "+x+"   "+y+"   "+z+"   "+truc2+"   "+truc3;
 	}
 }
