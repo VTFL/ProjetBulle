@@ -66,23 +66,23 @@ public class Trajectoire extends ArrayList<Bulle> {
 		}
 	}
 
-	public static Trajectoire ajoutBulleTrajectoire(ArrayList<Bulle> bulles, Trajectoire dir){
-		return ajoutBulleTrajectoire(bulles.iterator(),dir);
+	public static Trajectoire ajoutBulleTrajectoire(ArrayList<Bulle> bulles,Trajectoire dir){
+		return dir.ajoutBulleTrajectoire(bulles.iterator());
 	}
 
-	public static Trajectoire ajoutBulleTrajectoire(Iterator<Bulle> it, Trajectoire dir){
+	public Trajectoire ajoutBulleTrajectoire(Iterator<Bulle> it){
 		Trajectoire res = new Trajectoire();
 		Bulle bulle = it.next();
 
-		if(isBulleOK(dir,bulle) && dir.size()==4){
-			dir.add(bulle);
-			res = dir;
-		}else if(isBulleOK(dir,bulle) && it.hasNext()){
-			for(Bulle b : dir){res.add(b);}
+		if(isBulleOK(this,bulle) && this.size()==4){
+			this.add(bulle);
+			res = this;
+		}else if(isBulleOK(this,bulle) && it.hasNext()){
+			for(Bulle b : this){res.add(b);}
 			res.add(bulle);
-			res = ajoutBulleTrajectoire(it,res);
+			res = res.ajoutBulleTrajectoire(it);
 		}else if(it.hasNext()){
-			res = ajoutBulleTrajectoire(it,dir);
+			res = this.ajoutBulleTrajectoire(it);
 		}else{
 			res=null;
 		}
