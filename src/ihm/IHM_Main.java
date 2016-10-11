@@ -49,6 +49,11 @@ public class IHM_Main extends JFrame{
 
     public IHM_Main(){
         super("Projet Bulle");
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
 
         Container cont = getContentPane();
 
