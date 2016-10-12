@@ -14,7 +14,7 @@ public class Main {
 		ArrayList<Bulle> bulles = libBulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000003.txt");
 		System.out.println(bulles);
 		System.out.println(bulles.get(4).getDistance(bulles.get(5)));
-		ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles);
+		ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_5);
 
 		System.out.println(res.size());
 		SingleGraph g = new SingleGraph("test");
@@ -51,7 +51,7 @@ public class Main {
 		ArrayList<Bulle> bulles = libBulle.getBullesFromFile(nomFichier);
 		System.out.println(bulles);
 		System.out.println(bulles.get(4).getDistance(bulles.get(5)));
-		ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles);
+		ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_5);
 
 		System.out.println(res.size());
 		//SingleGraph g = new SingleGraph("test");

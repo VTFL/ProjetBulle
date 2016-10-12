@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
@@ -12,11 +13,24 @@ public class Trajectoire extends ArrayList<Bulle> {
 	final static double ANGLE = 160*Math.PI/180; // radian
 	final static double DISTANCE_MAX = 5;
 	final static double POIDS_DISTANCE = 1/5;
+    final static int[] FORMATAGE_5 = new int[]{3}; //indice des long
+    final static int[] FORMATAGE_443 = new int[]{4,4}; // indice des long
+
 
     private double angleTrajectoire;
+    private int[] indiceLong;
 
     public Trajectoire() {
         angleTrajectoire = 0;
+        indiceLong =FORMATAGE_5;
+    }
+
+    public int[] getIndiceLong() {
+        return indiceLong;
+    }
+
+    public void setIndiceLong(int[] indiceLong) {
+        this.indiceLong = indiceLong;
     }
 
     public double getAngleTrajectoire() {
@@ -57,27 +71,26 @@ public class Trajectoire extends ArrayList<Bulle> {
 
 	}
 
-	public boolean isBulleOK( Bulle b){
+	public boolean isBulleOK( Bulle b ){
 		int i = this.size();
 		double distance = b.getDistance(this.get(i - 1));
 		double alpha = angleOriente(b, this.get(i - 2), this.get(i - 1));
 		double distancePrec = this.get(i-2).getDistance(this.get(i-1));
-		if (i == 3) {
-			// la 4ème bulle
-			distancePrec = 2 * distancePrec;
+
+		if (Arrays.stream(indiceLong).anyMatch(value -> value == i)) {
+			// Long
+            distancePrec = 2 * distancePrec;
 		}
-		if (i == 4) {
-			// la 5ème bulle
+		//Arrays.stream(indiceLong).anyMatch(value -> value == i+1)
+		if (Arrays.stream(indiceLong).anyMatch(value -> value == (i-1))) {
+			// AprèsLong
 			distancePrec = distancePrec/2;
 		}
 		if ((((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
 				&& (distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))))
 				&& (((alpha > ANGLE) ) || (alpha < ANGLE * -1))
-
                      )
 				{
-                    //System.out.println(Math.signum(angleTrajectoire));
-            this.angleTrajectoire = alpha;
 			return true;
 		}else {
 			return false;
@@ -141,7 +154,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 
 
 
-	public static ArrayList<Trajectoire> getDirection(ArrayList<Bulle> ar) {
+	public static ArrayList<Trajectoire> getDirection(ArrayList<Bulle> ar,int[] indiceLong) {
 		ArrayList<Trajectoire> couples = new ArrayList<Trajectoire>();
 		ArrayList<Bulle> bulles = new ArrayList<Bulle>(ar);
 		ArrayList<Trajectoire> res = new ArrayList<Trajectoire>();
@@ -150,6 +163,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 			for (Bulle b2 : bulles) {
 				if (!b1.equals(b2) && b1.getDistance(b2)<DISTANCE_MAX) {
 					Trajectoire dir = new Trajectoire();
+                    dir.setIndiceLong(indiceLong);
 					dir.add(b1);
 					dir.add(b2);
 					couples.add(dir);
