@@ -1,3 +1,4 @@
-./idea/**
-./idea/copyright/**
-./idea/librairies/**
+/.idea
+/.idea/**
+/.idea/copyright/**
+/.idea/libraries/**
