@@ -1,3 +1,9 @@
 node.important {
     fill-color: red;
 }
+node.selection {
+    fill-color: red;
+}
+node.nonSelection {
+    fill-color: black;
+}

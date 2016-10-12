@@ -4,7 +4,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Created by Utilisateur on 03/10/2016.
@@ -46,7 +46,7 @@ public class Main {
 		}
 		g.display(false);
 	}
-	public void mainIHM_Test(String nomFichier,Graph g) {
+	public List<List<Integer>>  mainIHM_Test(String nomFichier,Graph g) {
 	//	ArrayList<Bulle> bulles = libBulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt");
 		ArrayList<Bulle> bulles = libBulle.getBullesFromFile(nomFichier);
 		System.out.println(bulles);
@@ -58,25 +58,31 @@ public class Main {
 
 		g.addAttribute("ui.antialias");
 		g.addAttribute("ui.quality");
+        g.addAttribute("ui.stylesheet","url(./pointRouge.css)");
+
 		int id=0;
+        List<List<Integer>> trajsAvecID = new ArrayList<List<Integer>>();
+        List<Integer> traj;
 		for(int i=0; i<res.size();i++) {
 			Trajectoire dir =res.get(i);
 			Node prec = null;
-
+            traj= new ArrayList<Integer>();
 			for (Bulle b : dir) {
 				g.addNode(id+ "");
 				Node n = g.getNode(id+"");
+                traj.add(id);
 				if(n!=null) {
-					id++;
 					n.setAttribute("xy", b.getX(), b.getY());
 					if (prec != null) {
 						g.addEdge(id + prec.getId(), n, prec);
-						id++;
 					}
+                    id++;
 					prec = n;
 				}
 			}
+            trajsAvecID.add(traj);
 		}
+		return trajsAvecID;
 
 
 	}
