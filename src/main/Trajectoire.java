@@ -9,11 +9,24 @@ import java.util.stream.Collectors;
  */
 public class Trajectoire extends ArrayList<Bulle> {
 	final static double INTERVALLE_PRECISION = 0.10;
-	final static double ANGLE = 145*Math.PI/180; // radian
-	final static double DISTANCE_MAX = 1.5;
-	final static double POIDS_ANGLE = 1;
-	//0,2 m/s (xy) 0,1m/s(z)
-	// dt = 2ms
+	final static double ANGLE = 160*Math.PI/180; // radian
+	final static double DISTANCE_MAX = 5;
+	final static double POIDS_DISTANCE = 1/5;
+
+    private double angleTrajectoire;
+
+    public Trajectoire() {
+        angleTrajectoire = 0;
+    }
+
+    public double getAngleTrajectoire() {
+        return angleTrajectoire;
+    }
+
+    public void setAngleTrajectoire(double angleTrajectoire) {
+        this.angleTrajectoire = angleTrajectoire;
+    }
+
 
 
     //renvoi un angle alpha a partir des distance a b et c
@@ -59,8 +72,12 @@ public class Trajectoire extends ArrayList<Bulle> {
 		}
 		if ((((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
 				&& (distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))))
-				&& ((((alpha > ANGLE) ) || (alpha < ANGLE * -1) ))
-				){
+				&& (((alpha > ANGLE) ) || (alpha < ANGLE * -1))
+
+                     )
+				{
+                    //System.out.println(Math.signum(angleTrajectoire));
+            this.angleTrajectoire = alpha;
 			return true;
 		}else {
 			return false;
@@ -97,10 +114,22 @@ public class Trajectoire extends ArrayList<Bulle> {
 		double distance2 = b2.getDistance(this.get(i - 1));
 		double alpha2 = Math.abs(angleOriente(b2, this.get(i - 2), this.get(i - 1)));
 		double x = DISTANCE_MAX / Math.PI; // la valeur qui sert a pondéré les angle et la distance pour avoir un rapport égale entre les deux avec DISTANCE_MAX = ANGLE_MAX*x
-		double val1 = (alpha1*x)*POIDS_ANGLE-distance1;
-		double val2 = (alpha2*x)*POIDS_ANGLE-distance2;
-		System.out.println(distance1);
-		System.out.println(distance2);
+		double val1 = ((alpha1-ANGLE)*x)*POIDS_DISTANCE-distance1;
+		double val2 = ((alpha2-ANGLE)*x)*POIDS_DISTANCE-distance2;
+        /*System.out.println("--------------");
+        System.out.println(distance1);
+        System.out.println(distance2);*/
+
+        if(distance1 == 0){
+            /*System.out.println("--");
+            System.out.println(alpha1-ANGLE);
+            System.out.println(alpha2-ANGLE);*/
+            val1=Double.POSITIVE_INFINITY;
+
+        }else if(distance2 == 0){
+            val2=Double.POSITIVE_INFINITY;
+        }
+
 		if(val1 < val2){
 			return 1;
 		}else if(val1 > val2){
@@ -130,8 +159,9 @@ public class Trajectoire extends ArrayList<Bulle> {
 		couples.sort((o1, o2) -> {if(o1.get(0).getDistance(o1.get(1)) > o2.get(0).getDistance(o2.get(1)))return 1; else return-1;});
 
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
-			bulles.sort((o1, o2) -> {if(o1.getDistance(couples.get(0).get(1)) > o2.getDistance(couples.get(0).get(1)))return 1; else return-1;});
-			//bulles.sort((o1, o2) -> couples.get(0).heuristique1(o1,o2) );
+			//bulles.sort((o1, o2) -> {if(o1.getDistance(couples.get(0).get(1)) > o2.getDistance(couples.get(0).get(1)))return 1; else return-1;});
+			bulles.sort((o1, o2) -> couples.get(0).heuristique1(o1,o2) );
+            //ajouter l'équivalence de tout des angle
 
 			Trajectoire tmp = couples.get(0).ajoutBulleTrajectoire(bulles);
 			if(tmp == null){
