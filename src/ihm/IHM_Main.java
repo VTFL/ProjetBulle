@@ -1,4 +1,5 @@
 package ihm;
+
 import main.*;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -6,21 +7,20 @@ import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.IOException;
+
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by valentinpitel on 06/10/2016.
  */
-public class IHM_Main extends JFrame{
+public class IHM_Main extends JFrame {
     private JPanel pan_nord;
     private JPanel pan_ouest;
     private JPanel pan_sud;
@@ -28,7 +28,7 @@ public class IHM_Main extends JFrame{
     private JButton btn_execution;
 
     private JLabel lbl_fichier;
-    private JLabel lbl_lstButlles;
+    private JLabel lbl_lstTrajectoires;
     private JLabel lbl_modeleBulle;
 
 
@@ -44,21 +44,24 @@ public class IHM_Main extends JFrame{
     private Graph graph;
 
     private String nomFichier;
-    private final String aucunFichier="Aucun fichier selectionné.";
-    private static final String[] modeleBulle={"3-2","4-4-3","..."};
+    private int trajectoireChoisie;
+    private List<List<Integer>> ar_traj;
 
-    public IHM_Main(){
+    private static final String aucunFichier = "Aucun fichier selectionné.";
+    private static final String[] modeleBulle = {"3-2", "4-4-3", "..."};
+
+    public IHM_Main() {
         super("Projet Bulle");
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }catch(Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         Container cont = getContentPane();
-
-        this.nomFichier=null;
-
+        this.ar_traj = new ArrayList<List<Integer>>();
+        this.nomFichier = null;
+        this.trajectoireChoisie = -1;
 
         graph = new SingleGraph("Test");
         viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
@@ -70,9 +73,10 @@ public class IHM_Main extends JFrame{
 
         pan_ouest = new JPanel();//choix du layout à définir
         pan_sud = new JPanel();
+        pan_sud.add(new JLabel("Double cliquez sur une trajectoire pour l'afficher en rouge"));
         // pan_nord
-        btn_choixFichier=new JButton("Choix du fichier de données");
-        lbl_fichier=new JLabel(aucunFichier);
+        btn_choixFichier = new JButton("Choix du fichier de données");
+        lbl_fichier = new JLabel(aucunFichier);
 
         btn_choixFichier.addActionListener(new actionChoixFichier());
 
@@ -85,7 +89,7 @@ public class IHM_Main extends JFrame{
         p2.setLayout(new BoxLayout(p2, BoxLayout.LINE_AXIS));
         p2.add(lbl_fichier);
 
-        pan_nord.setLayout(new BoxLayout(pan_nord,BoxLayout.PAGE_AXIS));
+        pan_nord.setLayout(new BoxLayout(pan_nord, BoxLayout.PAGE_AXIS));
         pan_nord.setBorder(BorderFactory.createLineBorder(Color.lightGray));
         pan_nord.add(p1);
         pan_nord.add(p2);
@@ -96,66 +100,62 @@ public class IHM_Main extends JFrame{
 
         c.fill = GridBagConstraints.HORIZONTAL;
         lbl_modeleBulle = new JLabel("Modèle trajectoire :");
-        c.weightx=0.5;
-        c.gridx=0;
-        c.gridy=0;
-        pan_ouest.add(lbl_modeleBulle,c);
+        c.weightx = 0.5;
+        c.gridx = 0;
+        c.gridy = 0;
+        pan_ouest.add(lbl_modeleBulle, c);
         cb_modeleBulle = new JComboBox(modeleBulle);
         cb_modeleBulle.setEditable(false);
-        c.fill=GridBagConstraints.HORIZONTAL;
-        c.weightx=0.5;
-        c.gridx=2;
-        c.gridy=0;
-        pan_ouest.add(cb_modeleBulle,c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 0.5;
+        c.gridx = 2;
+        c.gridy = 0;
+        pan_ouest.add(cb_modeleBulle, c);
 
         btn_execution = new JButton("Affichage graph");
         btn_execution.setEnabled(false);
         btn_execution.addActionListener(new actionAffichageGraph());
-        c.fill=GridBagConstraints.HORIZONTAL;
-        c.weightx=0.8;
-        c.gridx=0;
-        c.gridwidth=3;
-        c.gridy=1;
-        pan_ouest.add(btn_execution,c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 0.8;
+        c.gridx = 0;
+        c.gridwidth = 3;
+        c.gridy = 1;
+        pan_ouest.add(btn_execution, c);
 
-        lbl_lstButlles = new JLabel("Liste des bulles :");
-        c.fill=GridBagConstraints.HORIZONTAL;
-        c.weightx=0.8;
-        c.insets = new Insets(2,0,0,0);
-        c.gridx=0;
-        c.gridwidth=2;
-        c.gridy=2;
-        pan_ouest.add(lbl_lstButlles,c);
+        lbl_lstTrajectoires = new JLabel("Liste des Trajectoires :");
+        lbl_lstTrajectoires.setVisible(false);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 0.8;
+        c.insets = new Insets(2, 0, 0, 0);
+        c.gridx = 0;
+        c.gridwidth = 2;
+        c.gridy = 2;
+        pan_ouest.add(lbl_lstTrajectoires, c);
 
         JScrollPane scrollPane = new JScrollPane();
-        String[] data={"test","test2","test3","test2"
-                ,"test2","test3","test2"
-                ,"test2","test3","test2"
-                ,"test2","test3","test2"
-                ,"test2","test3","test2"
-                ,"test2","test3","test2"
-                ,"test2","test3","test2"
-                ,"test3","test2","test3","test2","test3"};
-        lst_trajectoires= new JList(data);
+        lst_trajectoires = new JList();
+        lst_trajectoires.setEnabled(false);
+
+        lst_trajectoires.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         lst_trajectoires.addMouseListener(new actionLstTrajectoires());
 
         scrollPane.setViewportView(lst_trajectoires);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        c.fill=GridBagConstraints.BOTH;
-        c.insets = new Insets(2,0,0,0);
-        c.gridx=0;
-        c.gridwidth=3;
-        c.weighty=1; //100% du reste de l'espace dispo
-        c.gridy=3;
-        pan_ouest.add(scrollPane,c);
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(2, 0, 0, 0);
+        c.gridx = 0;
+        c.gridwidth = 3;
+        c.weighty = 0.75; //100% du reste de l'espace dispo
+        c.gridy = 3;
+        pan_ouest.add(scrollPane, c);
         pan_ouest.setBorder(BorderFactory.createLineBorder(Color.lightGray));
         //------------------------------------------------------------//
 
-        cont.add(pan_nord,BorderLayout.NORTH);
-        cont.add(pan_ouest,BorderLayout.WEST);
-        cont.add(pan_sud,BorderLayout.SOUTH);
-        cont.add((Component)viewGraph,BorderLayout.CENTER);
+        cont.add(pan_nord, BorderLayout.NORTH);
+        cont.add(pan_ouest, BorderLayout.WEST);
+        cont.add(pan_sud, BorderLayout.SOUTH);
+        cont.add((Component) viewGraph, BorderLayout.CENTER);
 
         cont.setPreferredSize(new Dimension(900, 500));
         cont.setMinimumSize(new Dimension(800, 400));
@@ -167,84 +167,107 @@ public class IHM_Main extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    //action du bouton btn_choixFichier
-    //modifs a revoir
-    class actionChoixFichier implements ActionListener {
-        public  void    actionPerformed(ActionEvent e) {
-            // selection d'un fichier
+    public void majLstTrajectoire(List<List<Integer>> lst_traj) {
+        DefaultListModel dlm = new DefaultListModel();
+        trajectoireChoisie = -1;
 
-            // création de la boîte de dialogue
-            JFileChooser dialogue = new JFileChooser();
+        for (int i = 0; i < lst_traj.size(); i++)
+            dlm.addElement("Trajectoire " + (i + 1));
 
-            // affichage
-            int returnVal=dialogue.showOpenDialog(null);
-
-            // récupération du fichier sélectionné
-            System.out.println("Path du fichier choisi : " + dialogue.getSelectedFile());
-            if (returnVal != JFileChooser.APPROVE_OPTION) {
-                lbl_fichier.setText(aucunFichier);
-            }else{
-                nomFichier=dialogue.getSelectedFile().getName();
-                lbl_fichier.setText("Fichier séléctioné : "+nomFichier);
-                btn_execution.setEnabled(true);
-            }
-            System.out.println("Path du fichier choisi : " + dialogue.getSelectedFile());
-
-        }
+        this.lst_trajectoires.setModel(dlm);
+        lst_trajectoires.setEnabled(true);
+        lbl_lstTrajectoires.setVisible(true);
     }
 
-    class actionAffichageGraph implements ActionListener {
-        public  void    actionPerformed(ActionEvent e) {
-            //à modifier
-            boolean vefif = true;
-
-            //affichageGraph();
-       /*     graph.addNode("ID1");
-            graph.getNode("ID1").setAttribute("x",0);
-            graph.getNode("ID1").setAttribute("y",0);
-            graph.addNode("ID2");
-            graph.getNode("ID2").setAttribute("x",1);
-            graph.getNode("ID2").setAttribute("y",10);*/
-            graph.clear();
-            Main test = new Main();
-            test.mainIHM_Test(nomFichier,graph);
-        }
-    }
-    class actionLstTrajectoires implements MouseListener {
-        public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-
-                    System.out.println("dbl click : affichages des bulles d'une autre couleur");
-                }
-
-        }
-        public void mouseEntered(MouseEvent e) {}
-        public void mouseExited(MouseEvent e) {}
-        public void mousePressed(MouseEvent e) {}
-        public void mouseReleased(MouseEvent e) {}
-    }
-    public void initLstTrajectoires() {
-
-    }
-
-
-    public static void main(String[] arg) {
-        IHM_Main test = new IHM_Main();
-    }
-
-    public void saveFile(ArrayList<Trajectoire> trajectoires,String nomFichier){
-        try{
-            PrintWriter writer = new PrintWriter(nomFichier.split(".")[0]+"traité.txt", "UTF-8");
-            int i=1;
-            for(Trajectoire dir : trajectoires){
-                for(Bulle b : dir){
-                    writer.println(b+"   "+i);
+    public void saveFile(ArrayList<Trajectoire> trajectoires, String nomFichier) {
+        try {
+            PrintWriter writer = new PrintWriter(nomFichier.split(".")[0] + "traité.txt", "UTF-8");
+            int i = 1;
+            for (Trajectoire dir : trajectoires) {
+                for (Bulle b : dir) {
+                    writer.println(b + "   " + i);
                 }
                 i++;
             }
             writer.close();
-        }catch(Exception e){System.out.println("Probleme lors de l'enregistrement du fichier. Code d'erreur 0x1");}
+        } catch (Exception e) {
+            System.out.println("Probleme lors de l'enregistrement du fichier. Code d'erreur 0x1");
+        }
 
+    }
+
+    //action du bouton btn_choixFichier
+    class actionChoixFichier implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            // création de la boîte de dialogue
+            JFileChooser dialogue = new JFileChooser();
+
+            // affichage
+            int returnVal = dialogue.showOpenDialog(null);
+
+            if (returnVal != JFileChooser.APPROVE_OPTION) {
+                if (nomFichier == null) {
+                    lbl_fichier.setText(aucunFichier);
+                    graph.clear();
+                    trajectoireChoisie = -1;
+                    lst_trajectoires.setModel(new DefaultListModel());
+                }
+            } else {
+                nomFichier = dialogue.getSelectedFile().getName();
+                lbl_fichier.setText("Fichier séléctioné : " + nomFichier);
+                btn_execution.setEnabled(true);
+                graph.clear();
+                trajectoireChoisie = -1;
+                lst_trajectoires.setModel(new DefaultListModel());
+            }
+        }
+    }
+
+    //affiche le graph et met à jour la liste de trajectoires
+    class actionAffichageGraph implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            graph.clear();
+            trajectoireChoisie = -1;
+            Main test = new Main();
+
+            ar_traj = test.mainIHM_Test(nomFichier, graph);
+            majLstTrajectoire(ar_traj);
+        }
+    }
+
+    class actionLstTrajectoires implements MouseListener {
+        public void mouseClicked(MouseEvent e) {
+            if (((JList) e.getSource()).isEnabled())
+                if (e.getClickCount() == 2) {
+                    if (trajectoireChoisie != -1) {
+                        //affichage des bullesen noir
+                        for (int i = 0; i < ar_traj.get(trajectoireChoisie).size(); i++)
+                            graph.getNode(ar_traj.get(trajectoireChoisie).get(i)).setAttribute("ui.class", "nonSelection");
+                    }
+                    trajectoireChoisie = lst_trajectoires.getSelectedIndex();
+                    //affichage des bulles en rouge
+                    for (int i = 0; i < ar_traj.get(trajectoireChoisie).size(); i++) {
+                        graph.getNode(ar_traj.get(trajectoireChoisie).get(i)).setAttribute("ui.class", "selection");
+                    }
+                }
+
+        }
+
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        public void mouseExited(MouseEvent e) {
+        }
+
+        public void mousePressed(MouseEvent e) {
+        }
+
+        public void mouseReleased(MouseEvent e) {
+        }
+    }
+
+    public static void main(String[] arg) {
+        IHM_Main test = new IHM_Main();
     }
 
 }
