@@ -201,6 +201,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 
 		Trajectoire vide = new Trajectoire();
 		for(Bulle b : bulles) vide.add(b);
+		res.add(vide);
 
 		return res;
 	}

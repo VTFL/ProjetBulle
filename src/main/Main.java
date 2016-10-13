@@ -48,6 +48,7 @@ public class Main {
 	}
 	public List<List<Integer>>  mainIHM_Test(String nomFichier,Graph g) {
 	//	ArrayList<Bulle> bulles = libBulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt");
+		System.out.println("isOk");
 		ArrayList<Bulle> bulles = libBulle.getBullesFromFile(nomFichier);
 		System.out.println(bulles);
 		System.out.println(bulles.get(4).getDistance(bulles.get(5)));
@@ -73,7 +74,7 @@ public class Main {
                 traj.add(id);
 				if(n!=null) {
 					n.setAttribute("xy", b.getX(), b.getY());
-					if (prec != null) {
+					if (prec != null && i!=res.size()-1) {
 						g.addEdge(id + prec.getId(), n, prec);
 					}
                     id++;
