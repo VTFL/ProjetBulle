@@ -46,47 +46,7 @@ public class Main {
 		}
 		g.display(false);
 	}
-	public List<List<Integer>>  mainIHM_Test(String nomFichier,Graph g) {
-	//	ArrayList<Bulle> bulles = libBulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt");
-		System.out.println("isOk");
-		ArrayList<Bulle> bulles = libBulle.getBullesFromFile(nomFichier);
-		System.out.println(bulles);
-		System.out.println(bulles.get(4).getDistance(bulles.get(5)));
-		ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_5);
 
-		System.out.println(res.size());
-		//SingleGraph g = new SingleGraph("test");
-
-		g.addAttribute("ui.antialias");
-		g.addAttribute("ui.quality");
-        g.addAttribute("ui.stylesheet","url(./pointRouge.css)");
-
-		int id=0;
-        List<List<Integer>> trajsAvecID = new ArrayList<List<Integer>>();
-        List<Integer> traj;
-		for(int i=0; i<res.size();i++) {
-			Trajectoire dir =res.get(i);
-			Node prec = null;
-            traj= new ArrayList<Integer>();
-			for (Bulle b : dir) {
-				g.addNode(id+ "");
-				Node n = g.getNode(id+"");
-                traj.add(id);
-				if(n!=null) {
-					n.setAttribute("xy", b.getX(), b.getY());
-					if (prec != null && i!=res.size()-1) {
-						g.addEdge(id + prec.getId(), n, prec);
-					}
-                    id++;
-					prec = n;
-				}
-			}
-            trajsAvecID.add(traj);
-		}
-		return trajsAvecID;
-
-
-	}
 
 
 
