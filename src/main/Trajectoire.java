@@ -199,6 +199,8 @@ public class Trajectoire extends ArrayList<Bulle> {
 			couples.remove(0);
 		}
 
+		Trajectoire vide = new Trajectoire();
+		for(Bulle b : bulles) vide.add(b);
 
 		return res;
 	}

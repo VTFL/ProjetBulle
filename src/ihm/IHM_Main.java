@@ -168,8 +168,8 @@ public class IHM_Main extends JFrame {
     }
 
     public void majLstTrajectoire(List<List<Integer>> lst_traj) {
-        DefaultListModel dlm = new DefaultListModel();
-        trajectoireChoisie = -1;
+            DefaultListModel dlm = new DefaultListModel();
+            trajectoireChoisie = -1;
 
         for (int i = 0; i < lst_traj.size(); i++)
             dlm.addElement("Trajectoire " + (i + 1));
