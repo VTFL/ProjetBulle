@@ -48,7 +48,9 @@ public class IHM_Main extends JFrame {
 
     private String nomFichier;
     private int trajectoireChoisie;
+    private ArrayList<Integer> ar_trajsChoisies;
     private List<List<Integer>> ar_traj;
+    private boolean plusieursSelections;
 
     private static final String aucunFichier = "Aucun fichier selectionné.";
     private static final String[] modeleBulle = {"3-2", "4-4-3", "..."};
@@ -65,7 +67,8 @@ public class IHM_Main extends JFrame {
         this.ar_traj = new ArrayList<List<Integer>>();
         this.nomFichier = null;
         this.trajectoireChoisie = -1;
-
+        this.plusieursSelections= false;
+        this.ar_trajsChoisies= new ArrayList<Integer>();
         graph = new SingleGraph("Test");
         viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewGraph = viewer.addDefaultView(false);
@@ -139,7 +142,7 @@ public class IHM_Main extends JFrame {
         lst_trajectoires = new JList();
         lst_trajectoires.setEnabled(false);
 
-        lst_trajectoires.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      //  lst_trajectoires.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         lst_trajectoires.addMouseListener(new actionLstTrajectoires());
 
         scrollPane.setViewportView(lst_trajectoires);
@@ -281,16 +284,33 @@ public class IHM_Main extends JFrame {
     class actionLstTrajectoires implements MouseListener {
         public void mouseClicked(MouseEvent e) {
             if (((JList) e.getSource()).isEnabled())
-                if (e.getClickCount() == 2) {
-                    if (trajectoireChoisie != -1) {
-                        //affichage des bullesen noir
-                        for (int i = 0; i < ar_traj.get(trajectoireChoisie).size(); i++)
-                            graph.getNode(ar_traj.get(trajectoireChoisie).get(i)).setAttribute("ui.class", "nonSelection");
+                if (e.getClickCount() == 1) {
+                    if(plusieursSelections){
+                        for(int i = 0; i< ar_trajsChoisies.size();i++)
+                            for (int j = 0; j < ar_traj.get(ar_trajsChoisies.get(i)).size(); j++)
+                                graph.getNode(ar_traj.get(ar_trajsChoisies.get(i)).get(j)).setAttribute("ui.class", "nonSelection");
+                        plusieursSelections=false;
+                        ar_trajsChoisies.clear();
                     }
-                    trajectoireChoisie = lst_trajectoires.getSelectedIndex();
-                    //affichage des bulles en rouge
-                    for (int i = 0; i < ar_traj.get(trajectoireChoisie).size(); i++) {
-                        graph.getNode(ar_traj.get(trajectoireChoisie).get(i)).setAttribute("ui.class", "selection");
+                    if(lst_trajectoires.getSelectedIndices().length >1 ) {
+                        for (int i = 0; i < lst_trajectoires.getSelectedIndices().length; i++) {
+                            ar_trajsChoisies.add(lst_trajectoires.getSelectedIndices()[i]);
+                            for (int j = 0; j < ar_traj.get(lst_trajectoires.getSelectedIndices()[i]).size(); j++)
+                                graph.getNode(ar_traj.get(lst_trajectoires.getSelectedIndices()[i]).get(j)).setAttribute("ui.class", "selection");
+                        }
+                        plusieursSelections=true;
+                    }else {
+                        System.out.println("aloalalala");
+                        if (trajectoireChoisie != -1) {
+                            //affichage des bullesen noir
+                            for (int i = 0; i < ar_traj.get(trajectoireChoisie).size(); i++)
+                                graph.getNode(ar_traj.get(trajectoireChoisie).get(i)).setAttribute("ui.class", "nonSelection");
+                        }
+                        trajectoireChoisie = lst_trajectoires.getSelectedIndex();
+                        //affichage des bulles en rouge
+                        for (int i = 0; i < ar_traj.get(trajectoireChoisie).size(); i++) {
+                            graph.getNode(ar_traj.get(trajectoireChoisie).get(i)).setAttribute("ui.class", "selection");
+                        }
                     }
                 }
 
