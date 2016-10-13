@@ -7,3 +7,6 @@ node.selection {
 node.nonSelection {
     fill-color: black;
 }
+node.sansTrajectoire {
+    fill-color: lightgray;
+}

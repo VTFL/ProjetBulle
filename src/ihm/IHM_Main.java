@@ -1,7 +1,10 @@
 package ihm;
 
+import main.Trajectoire;
+import lib.libBulle;
 import main.*;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
@@ -171,7 +174,7 @@ public class IHM_Main extends JFrame {
             DefaultListModel dlm = new DefaultListModel();
             trajectoireChoisie = -1;
 
-        for (int i = 0; i < lst_traj.size(); i++)
+        for (int i = 0; i < lst_traj.size()-1; i++)
             dlm.addElement("Trajectoire " + (i + 1));
 
         this.lst_trajectoires.setModel(dlm);
@@ -179,6 +182,47 @@ public class IHM_Main extends JFrame {
         lbl_lstTrajectoires.setVisible(true);
     }
 
+    public void  affichageGraph() {
+        //	ArrayList<Bulle> bulles = libBulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt");
+        System.out.println("isOk");
+        ArrayList<Bulle> bulles = libBulle.getBullesFromFile(nomFichier);
+        System.out.println(bulles);
+        System.out.println(bulles.get(4).getDistance(bulles.get(5)));
+        ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_5);
+
+        System.out.println(res.size());
+        //SingleGraph g = new SingleGraph("test");
+
+        graph.addAttribute("ui.antialias");
+        graph.addAttribute("ui.quality");
+        graph.addAttribute("ui.stylesheet","url(./pointRouge.css)");
+
+        int id=0;
+
+        List<Integer> traj;
+        for(int i=0; i<res.size();i++) {
+            Trajectoire dir =res.get(i);
+            Node prec = null;
+            traj= new ArrayList<Integer>();
+            for (Bulle b : dir) {
+                graph.addNode(id+ "");
+                Node n = graph.getNode(id+"");
+                traj.add(id);
+                if(n!=null) {
+                    n.setAttribute("xy", b.getX(), b.getY());
+                    if (prec != null && i!=res.size()-1) {
+                        graph.addEdge(id + prec.getId(), n, prec);
+                    }
+                    id++;
+                    prec = n;
+                }
+            }
+            ar_traj.add(traj);
+        }
+        for(int i = 0; i< ar_traj.get(ar_traj.size()-1).size();i++){
+            graph.getNode(ar_traj.get(ar_traj.size()-1).get(i)).setAttribute("ui.class","sansTrajectoire");
+        }
+    }
     public void saveFile(ArrayList<Trajectoire> trajectoires, String nomFichier) {
         try {
             PrintWriter writer = new PrintWriter(nomFichier.split(".")[0] + "traité.txt", "UTF-8");
@@ -228,9 +272,8 @@ public class IHM_Main extends JFrame {
         public void actionPerformed(ActionEvent e) {
             graph.clear();
             trajectoireChoisie = -1;
-            Main test = new Main();
 
-            ar_traj = test.mainIHM_Test(nomFichier, graph);
+            affichageGraph();
             majLstTrajectoire(ar_traj);
         }
     }
