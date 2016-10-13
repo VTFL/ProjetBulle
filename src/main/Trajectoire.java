@@ -12,7 +12,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 	final static double INTERVALLE_PRECISION = 0.10;
 	final static double ANGLE = 160*Math.PI/180; // radian
 	final static double DISTANCE_MAX = 5;
-	final static double POIDS_DISTANCE = 1/5;
+	final static double POIDS_DISTANCE = 1/2;
     final public static int[] FORMATAGE_5 = new int[]{3}; //indice des long
     final public static int[] FORMATAGE_443 = new int[]{4,4}; // indice des long
 
@@ -89,8 +89,15 @@ public class Trajectoire extends ArrayList<Bulle> {
 		if ((((distancePrec - (distancePrec * INTERVALLE_PRECISION)) < distance)
 				&& (distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))))
 				&& (((alpha > ANGLE) ) || (alpha < ANGLE * -1))
-                     )
+				&& ((this.angleTrajectoire == 0)
+					||(
+						(this.angleTrajectoire%180 - (180*INTERVALLE_PRECISION) < alpha%180 )
+						&& (alpha%180 > this.angleTrajectoire%180 - (180*INTERVALLE_PRECISION) )
+						&& Math.signum(this.angleTrajectoire)== Math.signum(alpha))
+
+				))
 				{
+					this.angleTrajectoire=alpha;
 			return true;
 		}else {
 			return false;
