@@ -13,8 +13,8 @@ public class Trajectoire extends ArrayList<Bulle> {
 	final static double ANGLE = 160*Math.PI/180; // radian
 	final static double DISTANCE_MAX = 5;
 	final static double POIDS_DISTANCE = 1/5;
-    final static int[] FORMATAGE_5 = new int[]{3}; //indice des long
-    final static int[] FORMATAGE_443 = new int[]{4,4}; // indice des long
+    final public static int[] FORMATAGE_5 = new int[]{3}; //indice des long
+    final public static int[] FORMATAGE_443 = new int[]{4,4}; // indice des long
 
 
     private double angleTrajectoire;
