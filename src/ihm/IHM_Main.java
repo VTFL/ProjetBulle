@@ -162,7 +162,7 @@ public class IHM_Main extends JFrame {
 
         pack();
         setVisible(true);
-        setResizable(false);
+        setResizable(true);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
