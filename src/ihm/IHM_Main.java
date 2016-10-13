@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.*;
 import java.util.List;
@@ -79,7 +80,7 @@ public class IHM_Main extends JFrame {
 
         pan_ouest = new JPanel();//choix du layout à définir
         pan_sud = new JPanel();
-        pan_sud.add(new JLabel("Double cliquez sur une trajectoire pour l'afficher en rouge"));
+        pan_sud.add(new JLabel("Cliquez sur une ou plusieurs trajectoires pour les afficher en rouge"));
         // pan_nord
         btn_choixFichier = new JButton("Choix du fichier de données");
         lbl_fichier = new JLabel(aucunFichier);
@@ -186,22 +187,15 @@ public class IHM_Main extends JFrame {
     }
 
     public void  affichageGraph() {
-        //	ArrayList<Bulle> bulles = libBulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt");
-        System.out.println("isOk");
         ArrayList<Bulle> bulles = libBulle.getBullesFromFile(nomFichier);
-        System.out.println(bulles);
-        System.out.println(bulles.get(4).getDistance(bulles.get(5)));
         ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_5);
-
-        System.out.println(res.size());
-        //SingleGraph g = new SingleGraph("test");
 
         graph.addAttribute("ui.antialias");
         graph.addAttribute("ui.quality");
         graph.addAttribute("ui.stylesheet","url(./pointRouge.css)");
 
         int id=0;
-
+        ar_traj.clear();
         List<Integer> traj;
         for(int i=0; i<res.size();i++) {
             Trajectoire dir =res.get(i);
@@ -248,7 +242,7 @@ public class IHM_Main extends JFrame {
         public void actionPerformed(ActionEvent e) {
             // création de la boîte de dialogue
             JFileChooser dialogue = new JFileChooser();
-
+            dialogue.setCurrentDirectory(new File(System.getProperty("user.dir")));
             // affichage
             int returnVal = dialogue.showOpenDialog(null);
 
@@ -291,6 +285,7 @@ public class IHM_Main extends JFrame {
                                 graph.getNode(ar_traj.get(ar_trajsChoisies.get(i)).get(j)).setAttribute("ui.class", "nonSelection");
                         plusieursSelections=false;
                         ar_trajsChoisies.clear();
+                        trajectoireChoisie=-1;
                     }
                     if(lst_trajectoires.getSelectedIndices().length >1 ) {
                         for (int i = 0; i < lst_trajectoires.getSelectedIndices().length; i++) {
@@ -300,11 +295,11 @@ public class IHM_Main extends JFrame {
                         }
                         plusieursSelections=true;
                     }else {
-                        System.out.println("aloalalala");
                         if (trajectoireChoisie != -1) {
                             //affichage des bullesen noir
                             for (int i = 0; i < ar_traj.get(trajectoireChoisie).size(); i++)
                                 graph.getNode(ar_traj.get(trajectoireChoisie).get(i)).setAttribute("ui.class", "nonSelection");
+                            trajectoireChoisie=-1;
                         }
                         trajectoireChoisie = lst_trajectoires.getSelectedIndex();
                         //affichage des bulles en rouge
