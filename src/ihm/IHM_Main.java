@@ -25,11 +25,13 @@ import java.util.List;
  * Created by valentinpitel on 06/10/2016.
  */
 public class IHM_Main extends JFrame {
+
     private JPanel pan_nord;
     private JPanel pan_ouest;
     private JPanel pan_sud;
     private JButton btn_choixFichier;
     private JButton btn_execution;
+    private JButton btn_save;
 
     private JLabel lbl_fichier;
     private JLabel lbl_lstTrajectoires;
@@ -55,6 +57,7 @@ public class IHM_Main extends JFrame {
 
     private static final String aucunFichier = "Aucun fichier selectionné.";
     private static final String[] modeleBulle = {"3-2", "4-4-3", "..."};
+    private ArrayList<Trajectoire> ar_traj_bulles;
 
     public IHM_Main() {
         super("Projet Bulle");
@@ -87,9 +90,15 @@ public class IHM_Main extends JFrame {
 
         btn_choixFichier.addActionListener(new actionChoixFichier());
 
+
+        btn_save = new JButton("Sauvegarder les résultats");
+        btn_save.setEnabled(false);
+        btn_save.addActionListener(new actionSaveTraj());
+
         JPanel p1 = new JPanel();
         p1.setLayout(new BoxLayout(p1, BoxLayout.LINE_AXIS));
         p1.add(btn_choixFichier);
+        p1.add(btn_save);
 
 
         JPanel p2 = new JPanel();
@@ -187,8 +196,17 @@ public class IHM_Main extends JFrame {
     }
 
     public void  affichageGraph() {
+        //	ArrayList<Bulle> bulles = libBulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt");
+        System.out.println("isOk");
         ArrayList<Bulle> bulles = libBulle.getBullesFromFile(nomFichier);
+        System.out.println(bulles);
+        System.out.println(bulles.get(4).getDistance(bulles.get(5)));
         ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_5);
+
+        ar_traj_bulles = res;
+
+        System.out.println(res.size());
+        //SingleGraph g = new SingleGraph("test");
 
         graph.addAttribute("ui.antialias");
         graph.addAttribute("ui.quality");
@@ -220,21 +238,40 @@ public class IHM_Main extends JFrame {
             graph.getNode(ar_traj.get(ar_traj.size()-1).get(i)).setAttribute("ui.class","sansTrajectoire");
         }
     }
-    public void saveFile(ArrayList<Trajectoire> trajectoires, String nomFichier) {
-        try {
-            PrintWriter writer = new PrintWriter(nomFichier.split(".")[0] + "traité.txt", "UTF-8");
-            int i = 1;
-            for (Trajectoire dir : trajectoires) {
-                for (Bulle b : dir) {
-                    writer.println(b + "   " + i);
-                }
-                i++;
-            }
-            writer.close();
-        } catch (Exception e) {
-            System.out.println("Probleme lors de l'enregistrement du fichier. Code d'erreur 0x1");
-        }
 
+    //Sauvegarde des trajectoires valides dans un fichier.
+    // Modif de Florian le 13/10/2016
+    class actionSaveTraj implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+
+            JFileChooser filechoose = new JFileChooser();
+            filechoose.setCurrentDirectory(new File("."));  /* ouvrir la boite de dialogue dans répertoire courant */
+            filechoose.setDialogTitle("Enregistrer vos resultats"); /* nom de la boite de dialogue */
+
+            filechoose.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); /* pour afficher seulement les répertoires */
+
+            String approve = new String("Enregistrer"); /* Le bouton pour valider l’enregistrement portera la mention Enregistrer */
+            int resultatEnregistrer = filechoose.showDialog(filechoose, approve);
+            if (resultatEnregistrer == JFileChooser.APPROVE_OPTION){
+
+                String chemin = filechoose.getSelectedFile().getAbsolutePath()+"\\";
+
+                try {
+                    PrintWriter writer = new PrintWriter(chemin + nomFichier.split("\\.")[0] + "traité.txt", "UTF-8");
+                    int i = 1;
+                    for (Trajectoire dir : ar_traj_bulles) {
+                        for (Bulle b : dir) {
+                            writer.println(b + "   " + i);
+                        }
+                        i++;
+                    }
+                    writer.close();
+                } catch (Exception ex) {
+                    System.out.println("Probleme lors de l'enregistrement du fichier. Code d'erreur 0x1");
+                }
+
+            }
+        }
     }
 
     //action du bouton btn_choixFichier
@@ -245,6 +282,9 @@ public class IHM_Main extends JFrame {
             dialogue.setCurrentDirectory(new File(System.getProperty("user.dir")));
             // affichage
             int returnVal = dialogue.showOpenDialog(null);
+
+            //Le bouton save n'est pas sélectionnable.
+            btn_save.setEnabled(false);
 
             if (returnVal != JFileChooser.APPROVE_OPTION) {
                 if (nomFichier == null) {
@@ -272,6 +312,7 @@ public class IHM_Main extends JFrame {
 
             affichageGraph();
             majLstTrajectoire(ar_traj);
+            btn_save.setEnabled(true);
         }
     }
 
