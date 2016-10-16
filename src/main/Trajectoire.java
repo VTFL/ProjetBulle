@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
  * Created by Utilisateur on 03/10/2016.
  */
 public class Trajectoire extends ArrayList<Bulle> {
-	final static double INTERVALLE_PRECISION = 0.38;
+	final static double INTERVALLE_PRECISION = 0.10;
 	final static double ANGLE = 140*Math.PI/180; // radian
-	final static double ANGLE_ERREUR = 30*Math.PI/180;
+	final static double ANGLE_ERREUR = 20*Math.PI/180;
 	final static double DISTANCE_MAX = 0.87;
 	final static double POIDS_DISTANCE = 1/2;
 
@@ -53,11 +53,11 @@ public class Trajectoire extends ArrayList<Bulle> {
 		return (a.getX()*b.getY()-a.getY()*b.getX());
 	}
 	public static double angleOriente(Bulle a,Bulle b,Bulle c){
-		if(det(a,b) < 0){
+		//if(det(a,b) <= 0){
 			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b));
-		}else{
+		/*}else{
 			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b))*-1;
-		}
+		}*/
 	}
 
 	public static void main(String[] args) {
@@ -83,7 +83,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 		if (Arrays.stream(indiceLong).anyMatch(value -> value == i)) {
 			// Long
             distancePrec = 2 * distancePrec;
-			angleErreur = 2 * ANGLE_ERREUR;
+			angleErreur = ANGLE_ERREUR;
 		}
 		//Arrays.stream(indiceLong).anyMatch(value -> value == i+1)
 		if (Arrays.stream(indiceLong).anyMatch(value -> value == (i-1))) {
@@ -94,15 +94,15 @@ public class Trajectoire extends ArrayList<Bulle> {
 				&& (distance < (distancePrec + (distancePrec * INTERVALLE_PRECISION))))
 				&& (((alpha > ANGLE) ) || (alpha < ANGLE * -1))
 				&& ((this.angleTrajectoire == 0)
-					||(
-						(this.angleTrajectoire - angleErreur < alpha )
-						&& (alpha < this.angleTrajectoire + angleErreur ))
-						//&&  Math.signum(alpha) == Math.signum(this.angleTrajectoire))
+					||((
+						Math.signum(angleTrajectoire) == Math.signum(alpha))
+						&& (angleTrajectoire - angleErreur < alpha)
+						&& (angleTrajectoire + angleErreur > alpha))
 
 				))
 				{
 					if(this.angleTrajectoire != 0) {
-						//System.out.println(alpha + " : " + Math.signum(alpha)+"    " + this.angleTrajectoire+"  : " + Math.signum(this.angleTrajectoire));
+						System.out.println(alpha + " : " + Math.signum(alpha)+"    " + this.angleTrajectoire+"  : " + Math.signum(this.angleTrajectoire));
 					}else{
 						//System.out.println(alpha + "    " + angleTrajectoire);
 					}
@@ -190,13 +190,13 @@ public class Trajectoire extends ArrayList<Bulle> {
 		couples.sort((o1, o2) -> {if(o1.get(0).getDistance(o1.get(1)) > o2.get(0).getDistance(o2.get(1)))return 1; else return-1;});
 
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
-			//bulles.sort((o1, o2) -> {if(o1.getDistance(couples.get(0).get(1)) > o2.getDistance(couples.get(0).get(1)))return 1; else return-1;});
+			bulles.sort((o1, o2) -> {if(o1.getDistance(couples.get(0).get(1)) > o2.getDistance(couples.get(0).get(1)))return 1; else return-1;});
 			//bulles.sort((o1, o2) -> couples.get(0).heuristique1(o1,o2) );
             //ajouter l'équivalence de tout des angle
 
 			Trajectoire tmp = couples.get(0).ajoutBulleTrajectoire(bulles);
 			if(tmp == null){
-
+				couples.remove(0);
 			}else{
 
 				bulles.removeAll(tmp);
@@ -213,8 +213,9 @@ public class Trajectoire extends ArrayList<Bulle> {
 				couples.removeAll(aaa);
 			}
 
-			couples.remove(0);
 		}
+		Trajectoire test =res.get(5);
+		System.out.println(angleOriente(test.get(2), test.get(0), test.get(1))+ " : " + angleOriente(test.get(4), test.get(2), test.get(3)));
 
 		Trajectoire vide = new Trajectoire();
 		for(Bulle b : bulles) vide.add(b);
