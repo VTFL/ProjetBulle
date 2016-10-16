@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class Main {
     public static void main(String[] args) {
-		ArrayList<Bulle> bulles = libBulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000003.txt");
+		ArrayList<Bulle> bulles = libBulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt");
 		System.out.println(bulles);
 		System.out.println(bulles.get(4).getDistance(bulles.get(5)));
 		ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_5);

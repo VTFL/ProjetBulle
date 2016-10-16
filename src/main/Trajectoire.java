@@ -9,10 +9,12 @@ import java.util.stream.Collectors;
  * Created by Utilisateur on 03/10/2016.
  */
 public class Trajectoire extends ArrayList<Bulle> {
-	final static double INTERVALLE_PRECISION = 0.10;
-	final static double ANGLE = 160*Math.PI/180; // radian
-	final static double DISTANCE_MAX = 5;
+	final static double INTERVALLE_PRECISION = 0.38;
+	final static double ANGLE = 140*Math.PI/180; // radian
+	final static double ANGLE_ERREUR = 30*Math.PI/180;
+	final static double DISTANCE_MAX = 0.87;
 	final static double POIDS_DISTANCE = 1/2;
+
     final public static int[] FORMATAGE_5 = new int[]{3}; //indice des long
     final public static int[] FORMATAGE_443 = new int[]{4,4}; // indice des long
 
@@ -76,10 +78,12 @@ public class Trajectoire extends ArrayList<Bulle> {
 		double distance = b.getDistance(this.get(i - 1));
 		double alpha = angleOriente(b, this.get(i - 2), this.get(i - 1));
 		double distancePrec = this.get(i-2).getDistance(this.get(i-1));
+		double angleErreur = ANGLE_ERREUR;
 
 		if (Arrays.stream(indiceLong).anyMatch(value -> value == i)) {
 			// Long
             distancePrec = 2 * distancePrec;
+			angleErreur = 2 * ANGLE_ERREUR;
 		}
 		//Arrays.stream(indiceLong).anyMatch(value -> value == i+1)
 		if (Arrays.stream(indiceLong).anyMatch(value -> value == (i-1))) {
@@ -91,13 +95,18 @@ public class Trajectoire extends ArrayList<Bulle> {
 				&& (((alpha > ANGLE) ) || (alpha < ANGLE * -1))
 				&& ((this.angleTrajectoire == 0)
 					||(
-						(this.angleTrajectoire%180 - (180*INTERVALLE_PRECISION) < alpha%180 )
-						&& (alpha%180 > this.angleTrajectoire%180 - (180*INTERVALLE_PRECISION) )
-						&& Math.signum(this.angleTrajectoire)== Math.signum(alpha))
+						(this.angleTrajectoire - angleErreur < alpha )
+						&& (alpha < this.angleTrajectoire + angleErreur ))
+						//&&  Math.signum(alpha) == Math.signum(this.angleTrajectoire))
 
 				))
 				{
-					this.angleTrajectoire=alpha;
+					if(this.angleTrajectoire != 0) {
+						//System.out.println(alpha + " : " + Math.signum(alpha)+"    " + this.angleTrajectoire+"  : " + Math.signum(this.angleTrajectoire));
+					}else{
+						//System.out.println(alpha + "    " + angleTrajectoire);
+					}
+
 			return true;
 		}else {
 			return false;
@@ -118,6 +127,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 		}else if(this.isBulleOK(bulle) && it.hasNext()){
 			for(Bulle b : this){res.add(b);}
 			res.add(bulle);
+			res.setAngleTrajectoire(angleOriente(bulle, res.get(this.size() - 2), res.get(this.size() - 1)));
 			res = res.ajoutBulleTrajectoire(it);
 		}else if(it.hasNext()){
 			res = this.ajoutBulleTrajectoire(it);
@@ -181,7 +191,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 
 		while((!bulles.isEmpty()) && (!couples.isEmpty())){
 			//bulles.sort((o1, o2) -> {if(o1.getDistance(couples.get(0).get(1)) > o2.getDistance(couples.get(0).get(1)))return 1; else return-1;});
-			bulles.sort((o1, o2) -> couples.get(0).heuristique1(o1,o2) );
+			//bulles.sort((o1, o2) -> couples.get(0).heuristique1(o1,o2) );
             //ajouter l'équivalence de tout des angle
 
 			Trajectoire tmp = couples.get(0).ajoutBulleTrajectoire(bulles);
