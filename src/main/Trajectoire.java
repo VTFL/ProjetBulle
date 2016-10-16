@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
  * Created by Utilisateur on 03/10/2016.
  */
 public class Trajectoire extends ArrayList<Bulle> {
-	final static double INTERVALLE_PRECISION = 0.10;
+	final static double INTERVALLE_PRECISION = 0.20;
 	final static double ANGLE = 140*Math.PI/180; // radian
 	final static double ANGLE_ERREUR = 20*Math.PI/180;
-	final static double DISTANCE_MAX = 0.87;
+	final static double DISTANCE_MAX = 1;
 	final static double POIDS_DISTANCE = 1/2;
 
     final public static int[] FORMATAGE_5 = new int[]{3}; //indice des long
@@ -46,19 +46,27 @@ public class Trajectoire extends ArrayList<Bulle> {
 
 
     //renvoi un angle alpha a partir des distance a b et c
-    public static double alKashi(double a,double b,double c){
+    /*public static double alKashi(double a,double b,double c){
         return Math.acos((Math.pow(a,2) + Math.pow(b,2) - Math.pow(c,2))/(2*a*b));
     }
+
     public static double det( Bulle a, Bulle b){
 		return (a.getX()*b.getY()-a.getY()*b.getX());
 	}
 	public static double angleOriente(Bulle a,Bulle b,Bulle c){
-		//if(det(a,b) <= 0){
+		if(det(a,b) <= 0){
 			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b));
-		/*}else{
+		}else{
 			return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b))*-1;
-		}*/
+		}
+	}*/
+	public static double angleOriente(Bulle a,Bulle b,Bulle c){
+		double res = Math.atan2(b.getY()-c.getY(),b.getX()-c.getX()) - Math.atan2(a.getY()-c.getY(),a.getX()-c.getX());
+		while ( res >= Math.PI ) res -= 2*Math.PI;
+		while ( res <= -Math.PI ) res += 2*Math.PI;
+		return res;
 	}
+
 
 	public static void main(String[] args) {
 		// test calcul distance et angle
@@ -95,7 +103,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 				&& (((alpha > ANGLE) ) || (alpha < ANGLE * -1))
 				&& ((this.angleTrajectoire == 0)
 					||((
-						Math.signum(angleTrajectoire) == Math.signum(alpha))
+						Math.signum(angleTrajectoire) == 1)
 						&& (angleTrajectoire - angleErreur < alpha)
 						&& (angleTrajectoire + angleErreur > alpha))
 
@@ -214,8 +222,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 			}
 
 		}
-		Trajectoire test =res.get(5);
-		System.out.println(angleOriente(test.get(2), test.get(0), test.get(1))+ " : " + angleOriente(test.get(4), test.get(2), test.get(3)));
+
 
 		Trajectoire vide = new Trajectoire();
 		for(Bulle b : bulles) vide.add(b);
