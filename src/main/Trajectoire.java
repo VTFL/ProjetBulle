@@ -123,13 +123,40 @@ public class Trajectoire extends ArrayList<Bulle> {
 	}
 
 	public Trajectoire ajoutBulleTrajectoire443(ArrayList<ArrayList<Bulle>> bulles){
-		for(ArrayList<Bulle> b : bulles) {
-			return this.ajoutBulleTrajectoire(b.iterator());
+		return this.ajoutBulleTrajectoire443(bulles.get(0).iterator(),bulles);
+	}
+	public Trajectoire ajoutBulleTrajectoire443(Iterator<Bulle> it,ArrayList<ArrayList<Bulle>> bulles){
+		Trajectoire res = new Trajectoire();
+		Bulle bulle = it.next();
+
+		if(this.isBulleOK(bulle) && this.size()==10){
+			this.add(bulle);
+			res = this;
+		}else if(this.isBulleOK(bulle) && it.hasNext()){
+			for(Bulle b : this){res.add(b);}
+			res.add(bulle);
+			res.setAngleTrajectoire(angleOriente(bulle, res.get(this.size() - 2), res.get(this.size() - 1)));
+
+
+			if( this.size() == 3){
+				res = res.ajoutBulleTrajectoire443(bulles.get(1).iterator(),bulles);
+			}else if( this.size() == 7){
+				res = res.ajoutBulleTrajectoire443(bulles.get(2).iterator(),bulles);
+			}else{
+				res = res.ajoutBulleTrajectoire443(it,bulles);
+			}
+
+		}else if(it.hasNext()){
+			res = this.ajoutBulleTrajectoire443(it,bulles);
+		}else{
+			res=null;
 		}
+		return res;
 	}
 
-
-	public Trajectoire ajoutBulleTrajectoire(ArrayList<Bulle> bulles,ArrayList<Trajectoire>)
+	public Trajectoire ajoutBulleTrajectoire(ArrayList<Bulle> bulles){
+		return this.ajoutBulleTrajectoire(bulles.iterator());
+	}
 
 	public Trajectoire ajoutBulleTrajectoire(Iterator<Bulle> it){
 		Trajectoire res = new Trajectoire();
