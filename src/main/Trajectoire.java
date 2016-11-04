@@ -13,6 +13,7 @@ public class Trajectoire extends ArrayList<Bulle> {
 	final static double ANGLE = 140*Math.PI/180; // radian
 	final static double ANGLE_ERREUR = 20*Math.PI/180;
 	final static double DISTANCE_MAX = 1;
+
 	final static double POIDS_DISTANCE = 1/2;
 
     final public static int[] FORMATAGE_5 = new int[]{3}; //indice des long
@@ -121,9 +122,14 @@ public class Trajectoire extends ArrayList<Bulle> {
 		}
 	}
 
-	public Trajectoire ajoutBulleTrajectoire(ArrayList<Bulle> bulles){
-		return this.ajoutBulleTrajectoire(bulles.iterator());
+	public Trajectoire ajoutBulleTrajectoire443(ArrayList<ArrayList<Bulle>> bulles){
+		for(ArrayList<Bulle> b : bulles) {
+			return this.ajoutBulleTrajectoire(b.iterator());
+		}
 	}
+
+
+	public Trajectoire ajoutBulleTrajectoire(ArrayList<Bulle> bulles,ArrayList<Trajectoire>)
 
 	public Trajectoire ajoutBulleTrajectoire(Iterator<Bulle> it){
 		Trajectoire res = new Trajectoire();
@@ -177,9 +183,72 @@ public class Trajectoire extends ArrayList<Bulle> {
 		}
 	}
 
+	public static ArrayList<Trajectoire> getDirection(ArrayList<?> ar,int[] indiceLong) {
+		if(indiceLong == FORMATAGE_5){
+			return getDirection5((ArrayList<Bulle>) ar,indiceLong);
+		}else if(indiceLong == FORMATAGE_443){
+			return getDirection443((ArrayList<ArrayList<Bulle>>) ar,indiceLong);
+		}else{
+			System.out.println("formatage incorrect");
+			return null;
+		}
+	}
+	public static ArrayList<Trajectoire> getDirection443(ArrayList<ArrayList<Bulle>> ar,int[] indiceLong) {
+		ArrayList<ArrayList<Bulle>> bulles = new ArrayList<ArrayList<Bulle>>(ar);
+		ArrayList<Trajectoire> couples =new ArrayList<Trajectoire>();
+		ArrayList<Trajectoire> res =new ArrayList<Trajectoire>();
 
+		for (Bulle b1 : bulles.get(0)) {
+			for (Bulle b2 : bulles.get(0)) {
+				if (!b1.equals(b2) && b1.getDistance(b2)<DISTANCE_MAX) {
+					Trajectoire dir = new Trajectoire();
+					dir.setIndiceLong(indiceLong);
+					dir.add(b1);
+					dir.add(b2);
+					couples.add(dir);
+				}
+			}
+		}
+		couples.sort((o1, o2) -> {if(o1.get(0).getDistance(o1.get(1)) > o2.get(0).getDistance(o2.get(1)))return 1; else return-1;});
 
-	public static ArrayList<Trajectoire> getDirection(ArrayList<Bulle> ar,int[] indiceLong) {
+		while((!bulles.isEmpty()) && (!couples.isEmpty())){
+			bulles.get(0).sort((o1, o2) -> {if(o1.getDistance(couples.get(0).get(1)) > o2.getDistance(couples.get(0).get(1)))return 1; else return-1;});
+			bulles.get(1).sort((o1, o2) -> {if(o1.getDistance(couples.get(0).get(1)) > o2.getDistance(couples.get(0).get(1)))return 1; else return-1;});
+			bulles.get(2).sort((o1, o2) -> {if(o1.getDistance(couples.get(0).get(1)) > o2.getDistance(couples.get(0).get(1)))return 1; else return-1;});
+
+			Trajectoire tmp = couples.get(0).ajoutBulleTrajectoire443(bulles);
+			if(tmp == null){
+				couples.remove(0);
+			}else{
+
+				bulles.get(0).removeAll(tmp);
+				bulles.get(1).removeAll(tmp);
+				bulles.get(2).removeAll(tmp);
+				res.add(tmp);
+
+				ArrayList<Trajectoire> aaa = couples.stream().filter((Trajectoire dir) -> {
+							if (tmp.stream().anyMatch((Bulle bulle) -> dir.contains(bulle))) {
+								return true;
+							} else {
+								return false;
+							}
+						}
+				).collect(Collectors.toCollection(ArrayList<Trajectoire>::new));
+				couples.removeAll(aaa);
+			}
+
+		}
+		Trajectoire vide = new Trajectoire();
+		for(Bulle b : bulles.get(0)) vide.add(b);
+		for(Bulle b : bulles.get(1)) vide.add(b);
+		for(Bulle b : bulles.get(2)) vide.add(b);
+		res.add(vide);
+
+		return res;
+
+	}
+
+	public static ArrayList<Trajectoire> getDirection5(ArrayList<Bulle> ar,int[] indiceLong) {
 		ArrayList<Trajectoire> couples = new ArrayList<Trajectoire>();
 		ArrayList<Bulle> bulles = new ArrayList<Bulle>(ar);
 		ArrayList<Trajectoire> res = new ArrayList<Trajectoire>();
@@ -230,4 +299,6 @@ public class Trajectoire extends ArrayList<Bulle> {
 
 		return res;
 	}
+
+
 }
