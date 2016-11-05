@@ -3,6 +3,7 @@ package lib;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import main.Bulle;
 
@@ -29,5 +30,13 @@ public class libBulle {
             e1.printStackTrace();
         }
         return null;
+    }
+
+    public static ArrayList<ArrayList<Bulle>> getBulles443FromFiles(String f1, String f2, String f3){
+        ArrayList<ArrayList<Bulle>> ret = new ArrayList();
+        ret.add(getBullesFromFile(f1));
+        ret.add(getBullesFromFile(f2));
+        ret.add(getBullesFromFile(f3));
+        return ret;
     }
 }
