@@ -290,16 +290,16 @@ public class IHM_Main extends JFrame {
                 }else if(dialogue.getSelectedFiles().length==3 )     {
                     typeTraj=1;
                     lbl_modeleBulle.setText("Modèle trajectoire : 4-4-3");
-                    nomFichier1 = dialogue.getSelectedFiles()[0].getName();
-                    nomFichier2= dialogue.getSelectedFiles()[1].getName();
-                    nomFichier3= dialogue.getSelectedFiles()[2].getName();
-                    lbl_fichier.setText("Fichiers séléctionés : " + nomFichier +" ,"+ nomFichier2 +" ,"+nomFichier3);
+                    nomFichier1 = dialogue.getSelectedFiles()[0].getAbsolutePath();
+                    nomFichier2= dialogue.getSelectedFiles()[1].getAbsolutePath();
+                    nomFichier3= dialogue.getSelectedFiles()[2].getAbsolutePath();
+                    lbl_fichier.setText("Fichiers séléctionés : " + dialogue.getSelectedFiles()[0].getName() +" ,"+ dialogue.getSelectedFiles()[1].getName() +" ,"+dialogue.getSelectedFiles()[2].getName());
                     btn_execution.setEnabled(true);
                 }else {
                     typeTraj=0;
                     lbl_modeleBulle.setText("Modèle trajectoire : 3-2");
-                    nomFichier = dialogue.getSelectedFile().getName();
-                    lbl_fichier.setText("Fichier séléctioné : " + nomFichier);
+                    nomFichier = dialogue.getSelectedFile().getAbsolutePath();
+                    lbl_fichier.setText("Fichier séléctioné : " + dialogue.getSelectedFile().getName());
                     btn_execution.setEnabled(true);
                 }
                 graph.clear();
