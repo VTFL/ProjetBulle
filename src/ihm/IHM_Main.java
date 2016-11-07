@@ -191,7 +191,6 @@ public class IHM_Main extends JFrame {
     }
 
     public void  affichageGraph() {
-        System.out.println("isOk");
         ArrayList<Trajectoire> res;
         if(typeTraj==0){
             ArrayList<Bulle> bulles = libBulle.getBullesFromFile(nomFichier);

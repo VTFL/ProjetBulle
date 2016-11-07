@@ -77,8 +77,6 @@ public class Trajectoire extends ArrayList<Bulle> {
 		c = new Bulle(2,1,0);
 		d = new Bulle(1,0,0);
 		o = new Bulle(1,1,0);
-		System.out.println(Trajectoire.angleOriente(c,b,o)*180/Math.PI);
-		System.out.println(c.getDistance(d));
 
 	}
 
@@ -110,11 +108,11 @@ public class Trajectoire extends ArrayList<Bulle> {
 
 				))
 				{
-					if(this.angleTrajectoire != 0) {
+					/*if(this.angleTrajectoire != 0) {
 						System.out.println(alpha + " : " + Math.signum(alpha)+"    " + this.angleTrajectoire+"  : " + Math.signum(this.angleTrajectoire));
 					}else{
 						//System.out.println(alpha + "    " + angleTrajectoire);
-					}
+					}*/
 
 			return true;
 		}else {
@@ -187,14 +185,8 @@ public class Trajectoire extends ArrayList<Bulle> {
 		double x = DISTANCE_MAX / Math.PI; // la valeur qui sert a pondéré les angle et la distance pour avoir un rapport égale entre les deux avec DISTANCE_MAX = ANGLE_MAX*x
 		double val1 = ((alpha1-ANGLE)*x)*POIDS_DISTANCE-distance1;
 		double val2 = ((alpha2-ANGLE)*x)*POIDS_DISTANCE-distance2;
-        /*System.out.println("--------------");
-        System.out.println(distance1);
-        System.out.println(distance2);*/
 
         if(distance1 == 0){
-            /*System.out.println("--");
-            System.out.println(alpha1-ANGLE);
-            System.out.println(alpha2-ANGLE);*/
             val1=Double.POSITIVE_INFINITY;
 
         }else if(distance2 == 0){
