@@ -31,7 +31,6 @@ public class IHM_Main extends JFrame {
     private JPanel pan_sud;
     private JButton btn_choixFichier;
     private JButton btn_execution;
-    private JButton btn_save;
 
     private JLabel lbl_fichier;
     private JLabel lbl_lstTrajectoires;
@@ -94,15 +93,13 @@ public class IHM_Main extends JFrame {
 
         btn_choixFichier.addActionListener(new actionChoixFichier());
 
-
-        btn_save = new JButton("Sauvegarder les résultats");
-        btn_save.setEnabled(false);
-        btn_save.addActionListener(new actionSaveTraj());
+        JPanel p0 = new JPanel();
+        p0.setLayout(new BoxLayout(p0, BoxLayout.LINE_AXIS));
+        p0.add(new JLabel("Séléctionnez : 1 fichier => modèle 3-2    ||    3 fichiers => modèle 4-4-3"));
 
         JPanel p1 = new JPanel();
         p1.setLayout(new BoxLayout(p1, BoxLayout.LINE_AXIS));
         p1.add(btn_choixFichier);
-        p1.add(btn_save);
 
 
         JPanel p2 = new JPanel();
@@ -111,6 +108,7 @@ public class IHM_Main extends JFrame {
 
         pan_nord.setLayout(new BoxLayout(pan_nord, BoxLayout.PAGE_AXIS));
         pan_nord.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+        pan_nord.add(p0);
         pan_nord.add(p1);
         pan_nord.add(p2);
 
@@ -119,18 +117,11 @@ public class IHM_Main extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
 
         c.fill = GridBagConstraints.HORIZONTAL;
-        lbl_modeleBulle = new JLabel("Modèle trajectoire :");
+        lbl_modeleBulle = new JLabel(" ");
         c.weightx = 0.5;
         c.gridx = 0;
         c.gridy = 0;
         pan_ouest.add(lbl_modeleBulle, c);
-        cb_modeleBulle = new JComboBox(modeleBulle);
-        cb_modeleBulle.setEditable(false);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.5;
-        c.gridx = 2;
-        c.gridy = 0;
-        pan_ouest.add(cb_modeleBulle, c);
 
         btn_execution = new JButton("Affichage graph");
         btn_execution.setEnabled(false);
@@ -290,10 +281,6 @@ public class IHM_Main extends JFrame {
             // affichage
             int returnVal = dialogue.showOpenDialog(null);
 
-            //Le bouton save n'est pas sélectionnable.
-            btn_save.setEnabled(false);
-
-
             if (returnVal != JFileChooser.APPROVE_OPTION) {
                 if (nomFichier == null) {
                     lbl_fichier.setText(aucunFichier);
@@ -303,12 +290,15 @@ public class IHM_Main extends JFrame {
                     lbl_fichier.setText(aucunFichier);
                 }else if(dialogue.getSelectedFiles().length==3 )     {
                     typeTraj=1;
+                    lbl_modeleBulle.setText("Modèle trajectoire : 4-4-3");
                     nomFichier1 = dialogue.getSelectedFiles()[0].getName();
                     nomFichier2= dialogue.getSelectedFiles()[1].getName();
                     nomFichier3= dialogue.getSelectedFiles()[2].getName();
                     lbl_fichier.setText("Fichiers séléctionés : " + nomFichier +" ,"+ nomFichier2 +" ,"+nomFichier3);
                     btn_execution.setEnabled(true);
                 }else {
+                    typeTraj=0;
+                    lbl_modeleBulle.setText("Modèle trajectoire : 3-2");
                     nomFichier = dialogue.getSelectedFile().getName();
                     lbl_fichier.setText("Fichier séléctioné : " + nomFichier);
                     btn_execution.setEnabled(true);
@@ -328,7 +318,6 @@ public class IHM_Main extends JFrame {
 
             affichageGraph();
             majLstTrajectoire(ar_traj);
-            btn_save.setEnabled(true);
         }
     }
 
