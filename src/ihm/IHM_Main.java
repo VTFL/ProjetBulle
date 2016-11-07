@@ -298,7 +298,7 @@ public class IHM_Main extends JFrame {
             } else {
                 if(dialogue.getSelectedFiles().length>3) {
                     lbl_fichier.setText(aucunFichier);
-                }else if(dialogue.getSelectedFiles().length<4 && dialogue.getSelectedFiles().length>1)     {
+                }else if(dialogue.getSelectedFiles().length==3 )     {
                     nomFichier1 = dialogue.getSelectedFiles()[0].getName();
                     nomFichier2= dialogue.getSelectedFiles()[1].getName();
                     nomFichier3= dialogue.getSelectedFiles()[2].getName();
