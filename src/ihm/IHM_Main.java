@@ -196,17 +196,12 @@ public class IHM_Main extends JFrame {
     }
 
     public void  affichageGraph() {
-        //	ArrayList<Bulle> bulles = libBulle.getBullesFromFile("norma_N5_tau4_dt2_delai820_000000.txt");
         System.out.println("isOk");
         ArrayList<Bulle> bulles = libBulle.getBullesFromFile(nomFichier);
-        System.out.println(bulles);
-        System.out.println(bulles.get(4).getDistance(bulles.get(5)));
-        ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_5);
-
+        //ArrayList<ArrayList<Bulle>> bulles = libBulle.getBulles443FromFiles("NORMA_N3_2-5V_DT2_000000.txt","NORMA_N3_2-5V_DT2_000001.txt","NORMA_N3_2-5V_DT2_000002.txt");
+        //ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_5);
+        ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_443);
         ar_traj_bulles = res;
-
-        System.out.println(res.size());
-        //SingleGraph g = new SingleGraph("test");
 
         graph.addAttribute("ui.antialias");
         graph.addAttribute("ui.quality");
