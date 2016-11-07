@@ -61,6 +61,7 @@ public class IHM_Main extends JFrame {
     private static final String aucunFichier = "Aucun fichier selectionné.";
     private static final String[] modeleBulle = {"3-2", "4-4-3", "..."};
     private ArrayList<Trajectoire> ar_traj_bulles;
+    private static int typeTraj; //0 3-2 //// 1 4-4-3
 
     public IHM_Main() {
         super("Projet Bulle");
@@ -69,7 +70,7 @@ public class IHM_Main extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        typeTraj=0;
         Container cont = getContentPane();
         this.ar_traj = new ArrayList<List<Integer>>();
         this.nomFichier = null;
@@ -200,10 +201,17 @@ public class IHM_Main extends JFrame {
 
     public void  affichageGraph() {
         System.out.println("isOk");
-        ArrayList<Bulle> bulles = libBulle.getBullesFromFile(nomFichier);
-        //ArrayList<ArrayList<Bulle>> bulles = libBulle.getBulles443FromFiles("NORMA_N3_2-5V_DT2_000000.txt","NORMA_N3_2-5V_DT2_000001.txt","NORMA_N3_2-5V_DT2_000002.txt");
-        //ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_5);
-        ArrayList<Trajectoire> res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_443);
+        ArrayList<Trajectoire> res;
+        if(typeTraj==0){
+            ArrayList<Bulle> bulles = libBulle.getBullesFromFile(nomFichier);
+            res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_5);
+        }
+        else{
+            ArrayList<ArrayList<Bulle>> bulles = libBulle.getBulles443FromFiles(nomFichier1,nomFichier2,nomFichier3);
+            res = Trajectoire.getDirection(bulles,Trajectoire.FORMATAGE_443);
+        }
+
+
         ar_traj_bulles = res;
 
         graph.addAttribute("ui.antialias");
@@ -294,6 +302,7 @@ public class IHM_Main extends JFrame {
                 if(dialogue.getSelectedFiles().length>3) {
                     lbl_fichier.setText(aucunFichier);
                 }else if(dialogue.getSelectedFiles().length==3 )     {
+                    typeTraj=1;
                     nomFichier1 = dialogue.getSelectedFiles()[0].getName();
                     nomFichier2= dialogue.getSelectedFiles()[1].getName();
                     nomFichier3= dialogue.getSelectedFiles()[2].getName();
