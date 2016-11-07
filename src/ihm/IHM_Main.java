@@ -50,6 +50,9 @@ public class IHM_Main extends JFrame {
     private Graph graph;
 
     private String nomFichier;
+    private String nomFichier1;
+    private String nomFichier2;
+    private String nomFichier3;
     private int trajectoireChoisie;
     private ArrayList<Integer> ar_trajsChoisies;
     private List<List<Integer>> ar_traj;
@@ -279,6 +282,7 @@ public class IHM_Main extends JFrame {
         public void actionPerformed(ActionEvent e) {
             // création de la boîte de dialogue
             JFileChooser dialogue = new JFileChooser();
+            dialogue.setMultiSelectionEnabled(true);
             dialogue.setCurrentDirectory(new File(System.getProperty("user.dir")));
             // affichage
             int returnVal = dialogue.showOpenDialog(null);
@@ -286,17 +290,25 @@ public class IHM_Main extends JFrame {
             //Le bouton save n'est pas sélectionnable.
             btn_save.setEnabled(false);
 
+
             if (returnVal != JFileChooser.APPROVE_OPTION) {
                 if (nomFichier == null) {
                     lbl_fichier.setText(aucunFichier);
-                    graph.clear();
-                    trajectoireChoisie = -1;
-                    lst_trajectoires.setModel(new DefaultListModel());
                 }
             } else {
-                nomFichier = dialogue.getSelectedFile().getName();
-                lbl_fichier.setText("Fichier séléctioné : " + nomFichier);
-                btn_execution.setEnabled(true);
+                if(dialogue.getSelectedFiles().length>3) {
+                    lbl_fichier.setText(aucunFichier);
+                }else if(dialogue.getSelectedFiles().length<4 && dialogue.getSelectedFiles().length>1)     {
+                    nomFichier1 = dialogue.getSelectedFiles()[0].getName();
+                    nomFichier2= dialogue.getSelectedFiles()[1].getName();
+                    nomFichier3= dialogue.getSelectedFiles()[2].getName();
+                    lbl_fichier.setText("Fichiers séléctionés : " + nomFichier +" ,"+ nomFichier2 +" ,"+nomFichier3);
+                    btn_execution.setEnabled(true);
+                }else {
+                    nomFichier = dialogue.getSelectedFile().getName();
+                    lbl_fichier.setText("Fichier séléctioné : " + nomFichier);
+                    btn_execution.setEnabled(true);
+                }
                 graph.clear();
                 trajectoireChoisie = -1;
                 lst_trajectoires.setModel(new DefaultListModel());
