@@ -16,7 +16,6 @@ public class libDirection {
         return (a.getX() * b.getY()) - (a.getY()*b.getX());
     }
     public static double angleOrienté(Bulle a,Bulle b,Bulle c){
-        //System.out.println(det(a,b));
         if(det(a,b) < 0){
             return alKashi(a.getDistance(c),b.getDistance(c),a.getDistance(b));
         }else{
